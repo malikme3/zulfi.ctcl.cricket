@@ -993,3 +993,8 @@
 2017-09-02 15:20:06,064 [Worker-402] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
 2017-09-02 15:20:06,066 [Worker-402] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
 2017-09-02 15:20:06,066 [Worker-402] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory Z:\zulfi.ctcl.cricket\zulfi\src\test\resources
+2017-09-02 15:30:04,162 [Worker-410] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2017-09-02 15:30:04,162 [Worker-410] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2017-09-02 15:30:04,162 [Worker-410] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 0 resource
+2017-09-02 15:30:04,164 [Worker-410] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2017-09-02 15:30:04,164 [Worker-410] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory Z:\zulfi.ctcl.cricket\zulfi\src\test\resources
