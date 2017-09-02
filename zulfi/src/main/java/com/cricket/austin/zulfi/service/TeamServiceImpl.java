@@ -11,24 +11,21 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import com.cricket.austin.zulfi.dao.MatchScoringDao;
 import com.cricket.austin.zulfi.dao.TeamDao;
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Schedule;
 import com.cricket.austin.zulfi.model.ScoreCardBasic;
-import com.cricket.austin.zulfi.model.ScorecardBattingDetails;
-import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
-import com.cricket.austin.zulfi.model.ScorecardFowDetails;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
-import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
 import com.cricket.austin.zulfi.model.Seasons;
-import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
-import com.cricket.austin.zulfi.model.SubmitResults;
 
 @Service
 @Component
 public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private TeamDao teamDao;
+	@Autowired
+	private MatchScoringDao matchScoringDao;
 
 	@Override
 	public List<Ladder> getTeamPosition(String seasonYear, String seasonName) {
@@ -74,13 +71,8 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { Exception.class })
 	public List<Map<String, Object>> getExtraScoreDetails(int gameId) throws Exception {
 		/*
-		 * try {
-		 * update();
-		 * insert();
-		 * } catch (Exception ex) {
-		 * System.out.println(ex);
-		 * throw ex;
-		 * }
+		 * try { update(); insert(); } catch (Exception ex) {
+		 * System.out.println(ex); throw ex; }
 		 */
 		return teamDao.getExtraScoreDetails(gameId);
 	}
@@ -103,13 +95,8 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public void submitResults(SubmitResults scoreDetails) {
-		teamDao.submitResults(scoreDetails);
-	}
-
-	@Override
 	public void submitScore_gameDetails(ScorecardGameDetails gameDetails) {
-		teamDao.submitScore_gameDetails(gameDetails);
+		matchScoringDao.submitScore_gameDetails(gameDetails);
 
 	}
 
@@ -145,12 +132,6 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public int updateScorecardGameDetails(ScorecardGameDetails details) {
-		return teamDao.updateScorecardGameDetails(details);
-
-	}
-
-	@Override
 	public List<Map<String, Object>> findMatchByDate(int homeTeam, int awayTeam, Date matchDate) {
 		return teamDao.findMatchByDate(homeTeam, awayTeam, matchDate);
 
@@ -160,31 +141,6 @@ public class TeamServiceImpl implements TeamService {
 	public List<Map<String, Object>> findHowOut() {
 		return teamDao.findHowOut();
 
-	}
-
-	@Override
-	public int updateInsertScorecardExtrasDetails(SorecardExtrasDetails details) {
-		return teamDao.updateInsertScorecardExtrasDetails(details);
-	}
-
-	@Override
-	public int updateInsertScorecardTotalDetails(ScorecardTotalDetails details) {
-		return teamDao.updateInsertScorecardTotalDetails(details);
-	}
-
-	@Override
-	public int updateInsertScorecardFowDetails1(ScorecardFowDetails details) {
-		return teamDao.updateInsertScorecardFowDetails1(details);
-	}
-
-	@Override
-	public int updateScorecardBattingDetails(ScorecardBattingDetails details) {
-		return teamDao.updateScorecardBattingDetails(details);
-	}
-
-	@Override
-	public int updateScorecardBowlingDetails(ScorecardBowlingDetails details) {
-		return teamDao.updateScorecardBowlingDetails(details);
 	}
 
 }

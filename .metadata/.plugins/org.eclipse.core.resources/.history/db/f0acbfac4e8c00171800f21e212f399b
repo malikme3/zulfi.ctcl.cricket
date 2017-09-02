@@ -1,0 +1,22 @@
+package com.cricket.austin.zulfi.dao;
+
+import com.cricket.austin.zulfi.model.ScorecardBattingDetails;
+import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
+import com.cricket.austin.zulfi.model.ScorecardFowDetails;
+import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
+import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
+
+public interface MatchScoringDao {
+
+	int updateScorecardBattingDetails(ScorecardBattingDetails details);
+
+	int updateScorecardBowlingDetails(ScorecardBowlingDetails details);
+	
+	int updateInsertScorecardExtrasDetails(SorecardExtrasDetails details);
+
+	int updateInsertScorecardTotalDetails(ScorecardTotalDetails details);
+
+	int updateInsertScorecardFowDetails1(ScorecardFowDetails details);
+
+
+}

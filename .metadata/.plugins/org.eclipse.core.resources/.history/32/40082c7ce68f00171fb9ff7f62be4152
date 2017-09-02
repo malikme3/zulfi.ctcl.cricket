@@ -1,0 +1,97 @@
+package com.cricket.austin.zulfi.service;
+
+import java.sql.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import com.cricket.austin.zulfi.dao.MatchScoringDao;
+import com.cricket.austin.zulfi.dao.TeamDao;
+import com.cricket.austin.zulfi.model.Ladder;
+import com.cricket.austin.zulfi.model.Schedule;
+import com.cricket.austin.zulfi.model.ScoreCardBasic;
+import com.cricket.austin.zulfi.model.ScorecardBatting;
+import com.cricket.austin.zulfi.model.ScorecardBattingDetails;
+import com.cricket.austin.zulfi.model.ScorecardBowling;
+import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
+import com.cricket.austin.zulfi.model.ScorecardFowDetails;
+import com.cricket.austin.zulfi.model.ScorecardGameDetails;
+import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
+import com.cricket.austin.zulfi.model.Seasons;
+import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
+import com.cricket.austin.zulfi.model.SubmitResults;
+
+@Service
+@Component
+public class MatchScorningServiceImpl implements MatchScoringService {
+	@Autowired
+	private TeamDao teamDao;
+	@Autowired
+	private MatchScoringDao matchScoringDao;
+
+	// @Transactional(propagation=Propagation.REQUIRED, rollbackFor =
+	// {Exception.class})
+	public void update() throws Exception {
+		teamDao.updatFname();
+	}
+
+	// @Transactional(propagation=Propagation.REQUIRED, rollbackFor =
+	// {Exception.class})
+	public void insert() throws Exception {
+		try {
+			teamDao.updatLname();
+		} catch (Exception ex) {
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			throw ex;
+		}
+	}
+
+	@Override
+	public void submitResults(SubmitResults scoreDetails) {
+		matchScoringDao.submitResults(scoreDetails);
+	}
+
+	@Override
+	public void submitScore_gameDetails(ScorecardGameDetails gameDetails) {
+		matchScoringDao.submitScore_gameDetails(gameDetails);
+
+	}
+
+	@Override
+	public int updateScorecardGameDetails(ScorecardGameDetails details) {
+		return matchScoringDao.updateScorecardGameDetails(details);
+
+	}
+
+	@Override
+	public int updateInsertScorecardExtrasDetails(SorecardExtrasDetails details) {
+		return matchScoringDao.updateInsertScorecardExtrasDetails(details);
+	}
+
+	@Override
+	public int updateInsertScorecardTotalDetails(ScorecardTotalDetails details) {
+		return matchScoringDao.updateInsertScorecardTotalDetails(details);
+	}
+
+	@Override
+	public int updateInsertScorecardFowDetails1(ScorecardFowDetails details) {
+		return matchScoringDao.updateInsertScorecardFowDetails1(details);
+	}
+
+	@Override
+	public int updateScorecardBattingDetails(ScorecardBatting batsman) {
+		return matchScoringDao.updateScorecardBattingDetails(batsman);
+	}
+
+	@Override
+	public int updateScorecardBowlingDetails(ScorecardBowling match, ScorecardBowlingDetails bowler) {
+		return matchScoringDao.updateInsertScorecardBowlingDetails(match, bowler);
+	}
+
+}

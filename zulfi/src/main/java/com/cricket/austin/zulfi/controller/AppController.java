@@ -25,7 +25,6 @@ import com.cricket.austin.zulfi.model.PlayerCtcl;
 import com.cricket.austin.zulfi.model.Schedule;
 import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardBatting;
-import com.cricket.austin.zulfi.model.ScorecardBattingDetails;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
 import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
@@ -35,6 +34,7 @@ import com.cricket.austin.zulfi.model.Seasons;
 import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
 import com.cricket.austin.zulfi.model.SubmitResults;
 import com.cricket.austin.zulfi.model.Teams;
+import com.cricket.austin.zulfi.service.MatchScoringService;
 import com.cricket.austin.zulfi.service.TeamService;
 import com.cricket.austin.zulfi.service.UserService;
 
@@ -43,10 +43,13 @@ import com.cricket.austin.zulfi.service.UserService;
 public class AppController {
 
 	@Autowired
-	TeamService			teamServiceMatch;
+	TeamService teamServiceMatch;
 	@Autowired
-	UserService			userService;
-	static final Logger	logger	= LoggerFactory.getLogger(AppController.class);
+	UserService userService;
+	@Autowired
+	MatchScoringService matchScoringService;
+
+	static final Logger logger = LoggerFactory.getLogger(AppController.class);
 
 	@RequestMapping("/")
 	public String sayHello() {
@@ -234,56 +237,76 @@ public class AppController {
 	/************* Submitting Game score details **********************/
 	/************************ Start **********************************/
 
-	@RequestMapping(value = { "/submit/score/step1" }, method = RequestMethod.POST)
-	public ResponseEntity<Void> submitScore_step1(@RequestBody ScorecardGameDetails gameDetails,
-			SubmitResults home_team, SubmitResults away_team) {
-		System.out.println("In App Controller : submitScore_step1 Method");
+	/*
+	 * @RequestMapping(value = { "/submit/score/step1" }, method =
+	 * RequestMethod.POST) public ResponseEntity<Void>
+	 * submitScore_step1(@RequestBody ScorecardGameDetails gameDetails,
+	 * SubmitResults home_team, SubmitResults away_team) { System.out.println(
+	 * "In App Controller : submitScore_step1 Method");
+	 * 
+	 * // Insert into the scorecard_game_details table
+	 * teamServiceMatch.updateScorecardGameDetails(gameDetails); // submitting
+	 * details for home teams home_team.setTeamID(gameDetails.getHometeam());
+	 * away_team.setTeamID(gameDetails.getAwayteam());
+	 * 
+	 * // When game is ForFeit if (gameDetails.getForfeit() == 1) {
+	 * home_team.setPlayed(1); away_team.setPlayed(1);
+	 * 
+	 * if (gameDetails.getResultWonId() != 0) { home_team.setTied(0);
+	 * home_team.setNr(0); away_team.setTied(0); away_team.setNr(0); }
+	 * 
+	 * if (gameDetails.getResultWonId() == gameDetails.getHometeam()) {
+	 * home_team.setWon(1); home_team.setLost(0); away_team.setWon(0);
+	 * away_team.setLost(1);
+	 * 
+	 * } else if (gameDetails.getResultWonId() == gameDetails.getAwayteam()) {
+	 * home_team.setWon(0); home_team.setLost(1); away_team.setWon(1);
+	 * away_team.setLost(0);
+	 * 
+	 * } teamServiceMatch.submitResults(home_team);
+	 * teamServiceMatch.submitResults(away_team); }
+	 * 
+	 * // submitting details for away teams
+	 * 
+	 * return new ResponseEntity<Void>(HttpStatus.OK); }
+	 */
+	// Retrieving Match for next submit level i.e. to get game id
+	@RequestMapping(value = { "/findMatchByPlayingTeamsAndDate" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> findMatchByPlayingTeamsAndDate(@RequestParam int homeTeam,
+			int awayTeam, Date matchDate) throws Exception {
+		logger.info("In AppController.findMatchByPlayingTeamsAndDate(" + matchDate + ")");
+		List<Map<String, Object>> match = teamServiceMatch.findMatchByDate(homeTeam, awayTeam, matchDate);
+		return new ResponseEntity<List<Map<String, Object>>>(match, HttpStatus.OK);
+	}
 
-		// Insert into the scorecard_game_details table
-		teamServiceMatch.updateScorecardGameDetails(gameDetails);
-		// submitting details for home teams
-		home_team.setTeamID(gameDetails.getHometeam());
-		away_team.setTeamID(gameDetails.getAwayteam());
+	// Retrieving players for score card
+	@RequestMapping(value = { "/submit/score/players" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> playersById() throws Exception {
+		logger.info("In AppController.playersById");
+		List<Map<String, Object>> playersList = teamServiceMatch.findPlayer();
+		return new ResponseEntity<List<Map<String, Object>>>(playersList, HttpStatus.OK);
+	}
 
-		// When game is ForFeit
-		if (gameDetails.getForfeit() == 1) {
-			home_team.setPlayed(1);
-			away_team.setPlayed(1);
+	// Retrieving how out for score card
+	@RequestMapping(value = { "/submit/score/howout" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> howOut() throws Exception {
+		logger.info("In AppController.playersById");
+		List<Map<String, Object>> howOut = teamServiceMatch.findHowOut();
+		return new ResponseEntity<List<Map<String, Object>>>(howOut, HttpStatus.OK);
+	}
 
-			if (gameDetails.getResultWonId() != 0) {
-				home_team.setTied(0);
-				home_team.setNr(0);
-				away_team.setTied(0);
-				away_team.setNr(0);
-			}
-
-			if (gameDetails.getResultWonId() == gameDetails.getHometeam()) {
-				home_team.setWon(1);
-				home_team.setLost(0);
-				away_team.setWon(0);
-				away_team.setLost(1);
-
-			} else if (gameDetails.getResultWonId() == gameDetails.getAwayteam()) {
-				home_team.setWon(0);
-				home_team.setLost(1);
-				away_team.setWon(1);
-				away_team.setLost(0);
-
-			}
-			teamServiceMatch.submitResults(home_team);
-			teamServiceMatch.submitResults(away_team);
-		}
-
-		// submitting details for away teams
-
-		return new ResponseEntity<Void>(HttpStatus.OK);
+	@RequestMapping(value = { "/teams/players/teamsIds" }, method = RequestMethod.POST)
+	public ResponseEntity<List<Map<String, Object>>> playerByIds(@RequestBody List<Integer> ids) throws Exception {
+		logger.info("In AppController.playersByIds");
+		List<Map<String, Object>> playersList = teamServiceMatch.findPlayerByIds(ids);
+		return new ResponseEntity<List<Map<String, Object>>>(playersList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/submit/score/scorecardGameDetails" }, method = RequestMethod.POST)
 	public ResponseEntity<Void> updateScorecardGameDetails(@RequestBody ScorecardGameDetails gameDetails)
 			throws Exception {
 		logger.info("In AppController.updateScorecardGameDetails" + gameDetails);
-		int rows = teamServiceMatch.updateScorecardGameDetails(gameDetails);
+		int rows = matchScoringService.updateScorecardGameDetails(gameDetails);
 		logger.info("rows#  " + rows);
 
 		SubmitResults home_team = new SubmitResults();
@@ -323,48 +346,16 @@ public class AppController {
 			away_team.setTied(1);
 		}
 
-		teamServiceMatch.submitResults(home_team);
-		teamServiceMatch.submitResults(away_team);
+		matchScoringService.submitResults(home_team);
+		matchScoringService.submitResults(away_team);
 		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
-
-	// Retrieving Match for next submit level i.e. to get game id
-	@RequestMapping(value = { "/findMatchByPlayingTeamsAndDate" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> findMatchByPlayingTeamsAndDate(@RequestParam int homeTeam,
-			int awayTeam, Date matchDate) throws Exception {
-		logger.info("In AppController.findMatchByPlayingTeamsAndDate(" + matchDate + ")");
-		List<Map<String, Object>> match = teamServiceMatch.findMatchByDate(homeTeam, awayTeam, matchDate);
-		return new ResponseEntity<List<Map<String, Object>>>(match, HttpStatus.OK);
-	}
-
-	// Retrieving players for score card
-	@RequestMapping(value = { "/submit/score/players" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> playersById() throws Exception {
-		logger.info("In AppController.playersById");
-		List<Map<String, Object>> playersList = teamServiceMatch.findPlayer();
-		return new ResponseEntity<List<Map<String, Object>>>(playersList, HttpStatus.OK);
-	}
-
-	// Retrieving how out for score card
-	@RequestMapping(value = { "/submit/score/howout" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> howOut() throws Exception {
-		logger.info("In AppController.playersById");
-		List<Map<String, Object>> howOut = teamServiceMatch.findHowOut();
-		return new ResponseEntity<List<Map<String, Object>>>(howOut, HttpStatus.OK);
-	}
-
-	@RequestMapping(value = { "/teams/players/teamsIds" }, method = RequestMethod.POST)
-	public ResponseEntity<List<Map<String, Object>>> playerByIds(@RequestBody List<Integer> ids) throws Exception {
-		logger.info("In AppController.playersByIds");
-		List<Map<String, Object>> playersList = teamServiceMatch.findPlayerByIds(ids);
-		return new ResponseEntity<List<Map<String, Object>>>(playersList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardExtrasDetails" }, method = RequestMethod.PUT)
 	public ResponseEntity<Integer> updateScorecardExtrasDetails(@RequestBody SorecardExtrasDetails details)
 			throws Exception {
 		logger.info("In AppController.updateScorecardExtrasDetails");
-		int playersList = teamServiceMatch.updateInsertScorecardExtrasDetails(details);
+		int playersList = matchScoringService.updateInsertScorecardExtrasDetails(details);
 		return new ResponseEntity<Integer>(playersList, HttpStatus.OK);
 	}
 
@@ -372,40 +363,32 @@ public class AppController {
 	public ResponseEntity<Integer> updateScorecardTotalDetails(@RequestBody ScorecardTotalDetails details)
 			throws Exception {
 		logger.info("In AppController.updateScorecardTotalDetails");
-		int playersList = teamServiceMatch.updateInsertScorecardTotalDetails(details);
+		int playersList = matchScoringService.updateInsertScorecardTotalDetails(details);
 		return new ResponseEntity<Integer>(playersList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardFowDetails" }, method = RequestMethod.PUT)
-	public ResponseEntity<Integer> updateScorecardFowDetails(@RequestBody ScorecardFowDetails details)
+	public ResponseEntity<Integer> updateScorecardFowDetails(@RequestBody ScorecardFowDetails batsmanDetails)
 			throws Exception {
 		logger.info("In AppController.updateScorecardFowDetails");
-		int playersList = teamServiceMatch.updateInsertScorecardFowDetails1(details);
+		int playersList = matchScoringService.updateInsertScorecardFowDetails1(batsmanDetails);
 		return new ResponseEntity<Integer>(playersList, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardBattingDetailss" }, method = RequestMethod.POST)
-	public ResponseEntity<Integer> updateScorecardBattingDetails(
-			@RequestBody ScorecardBatting battingdetails)
+	public ResponseEntity<Integer> updateScorecardBattingDetails(@RequestBody ScorecardBatting details)
 			throws Exception {
-		int playersList = 0;
-		logger.info("In AppController.ScorecardBattingDetails");
-		/*
-		 * for (ScorecardBatting details : battingdetails) {
-		 * playersList = teamServiceMatch.updateScorecardBattingDetails(details.
-		 * getBattingDetails());
-		 * }
-		 */
-		return new ResponseEntity<Integer>(playersList, HttpStatus.OK);
+
+		logger.info("In AppController.ScorecardBattingDetails" + details);
+		int rows = matchScoringService.updateScorecardBattingDetails(details);
+		return new ResponseEntity<Integer>(0, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardBowlingDetails" }, method = RequestMethod.PUT)
-	public ResponseEntity<Integer> updateScorecardBowlingDetails(@RequestBody ScorecardBowling details)
-			throws Exception {
+	public ResponseEntity<Integer> updateScorecardBowlingDetails(@RequestBody ScorecardBowling match,
+			ScorecardBowlingDetails bowler) throws Exception {
 		logger.info("In AppController.ScorecardBowlingDetails");
-		Integer playersList = null;
-		// int playersList =
-		// teamServiceMatch.updateScorecardBowlingDetails(details);
-		return new ResponseEntity<Integer>(playersList, HttpStatus.OK);
+		int rows = matchScoringService.updateScorecardBowlingDetails(match, bowler);
+		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
 	}
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
-import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,13 +18,8 @@ import org.springframework.stereotype.Repository;
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Schedule;
 import com.cricket.austin.zulfi.model.ScoreCardBasic;
-import com.cricket.austin.zulfi.model.ScorecardBattingDetails;
-import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
-import com.cricket.austin.zulfi.model.ScorecardFowDetails;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
-import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
 import com.cricket.austin.zulfi.model.Seasons;
-import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
 import com.cricket.austin.zulfi.model.SubmitResults;
 
 @Repository
@@ -80,6 +74,7 @@ public class TeamDaoImpl implements TeamDao {
 		return teamsPoints;
 	}
 
+	@Override
 	public List<Ladder> getTeamsIdTeamsAbbrv(String seasonYear, String seasonName) {
 		List<Ladder> teamsNames = new ArrayList<Ladder>();
 
@@ -101,16 +96,14 @@ public class TeamDaoImpl implements TeamDao {
 
 	};
 
+	@Override
 	public List<ScoreCardBasic> getbasicScoreCard(int seasonId) {
 
 		List<ScoreCardBasic> teamsNames = new ArrayList<ScoreCardBasic>();
 		String sql = " SELECT  s.game_id, s.game_date, p.playerFName,p.playerLName,  s.result,a.TeamAbbrev AS AwayAbbrev, h.TeamAbbrev AS HomeAbbrev "
-				+ "FROM  scorecard_game_details s "
-				+ "INNER JOIN  teams a ON s.awayteam = a.TeamID "
-				+ "INNER JOIN  teams h ON s.hometeam = h.TeamID "
-				+ "INNER JOIN players p on s.mom = p.playerID	"
-				+ "WHERE  s.season= ? AND s.isactive=0	"
-				+ "ORDER BY  s.week, s.game_date, s.game_id";
+				+ "FROM  scorecard_game_details s " + "INNER JOIN  teams a ON s.awayteam = a.TeamID "
+				+ "INNER JOIN  teams h ON s.hometeam = h.TeamID " + "INNER JOIN players p on s.mom = p.playerID	"
+				+ "WHERE  s.season= ? AND s.isactive=0	" + "ORDER BY  s.week, s.game_date, s.game_id";
 
 		List<Map<String, Object>> teamNames = jdbcTemplate.queryForList(sql, new Object[] { seasonId });
 
@@ -140,10 +133,8 @@ public class TeamDaoImpl implements TeamDao {
 				+ "s.game_id, s.innings_id, s.batting_position, s.runs, s.balls, s.fours, s.sixes, p.PlayerID AS BatterID, "
 				+ "CONCAT(p.PlayerFName,' ',p.PlayerLName) AS BatterFullName, LEFT(p.PlayerFName,1) AS BatterFInitial, h.HowOutID, h.HowOutName,"
 				+ " h.HowOutAbbrev, CONCAT(a.PlayerFName,' ',a.PlayerLName) AS AssistFullName, LEFT(a.PlayerFName,1) AS AssistFInitial, "
-				+ "CONCAT(b.PlayerLName , ' ',b.PlayerFName) AS BowlerFullName, "
-				+ "sco.wickets,sco.total,sco.overs, "
-				+ "LEFT(b.PlayerFName,1) AS BowlerFInitial "
-				+ "FROM scorecard_batting_details s "
+				+ "CONCAT(b.PlayerLName , ' ',b.PlayerFName) AS BowlerFullName, " + "sco.wickets,sco.total,sco.overs, "
+				+ "LEFT(b.PlayerFName,1) AS BowlerFInitial " + "FROM scorecard_batting_details s "
 				+ "INNER JOIN teams t on s.team = t.teamid "
 				+ "INNER JOIN scorecard_game_details sc on sc.game_id = s.game_id "
 				+ "INNER JOIN teams tea on sc.toss_won_id = tea.teamid "
@@ -152,10 +143,8 @@ public class TeamDaoImpl implements TeamDao {
 				+ "INNER JOIN teams bs ON sc.batting_second_id = bs.TeamID "
 				+ "INNER JOIN grounds g ON sc.ground_id = g.GroundID "
 				+ "INNER JOIN scorecard_total_details sco on sc.game_id = sco.game_id "
-				+ "LEFT JOIN players pl ON sc.mom = pl.PlayerID "
-				+ "LEFT JOIN players a ON a.PlayerID = s.assist "
-				+ "LEFT JOIN players p ON p.PlayerID = s.player_id "
-				+ "LEFT JOIN players b ON b.PlayerID = s.bowler "
+				+ "LEFT JOIN players pl ON sc.mom = pl.PlayerID " + "LEFT JOIN players a ON a.PlayerID = s.assist "
+				+ "LEFT JOIN players p ON p.PlayerID = s.player_id " + "LEFT JOIN players b ON b.PlayerID = s.bowler "
 				+ "INNER JOIN howout h ON h.HowOutID = s.how_out WHERE s.game_id = ? AND s.how_out <> 1 "
 				+ "ORDER BY s.batting_position ;";
 
@@ -178,12 +167,9 @@ public class TeamDaoImpl implements TeamDao {
 		String sql = "SELECT t.teamAbbrev as batting_team, te.teamAbbrev as bowling_team,s.game_id, s.innings_id, s.bowling_position,"
 				+ " s.overs, s.maidens, s.runs, s.wickets, s.noballs, s.wides, p.PlayerID AS BowlerID, p.PlayerLName AS BowlerLName, "
 				+ "p.PlayerFName AS BowlerFName, LEFT(p.PlayerFName,1) AS BowlerFInitial "
-				+ "FROM scorecard_bowling_details s "
-				+ "INNER JOIN teams t on s.team = t.teamid "
-				+ "INNER JOIN teams te on s.opponent = te.teamid "
-				+ "LEFT JOIN players p ON p.PlayerID = s.player_id "
-				+ "WHERE s.game_id = ? "
-				+ "ORDER BY s.bowling_position and innings_id;";
+				+ "FROM scorecard_bowling_details s " + "INNER JOIN teams t on s.team = t.teamid "
+				+ "INNER JOIN teams te on s.opponent = te.teamid " + "LEFT JOIN players p ON p.PlayerID = s.player_id "
+				+ "WHERE s.game_id = ? " + "ORDER BY s.bowling_position and innings_id;";
 
 		List<Map<String, Object>> detailed_score = jdbcTemplate.queryForList(sql, new Object[] { gameId });
 		return detailed_score;
@@ -199,20 +185,12 @@ public class TeamDaoImpl implements TeamDao {
 				+ "LEFT JOIN scorecard_extras_details ex ON ex.game_id = s.game_id and ex.innings_id = s.innings_id "
 				+ "LEFT JOIN players a ON a.PlayerID = s.assist LEFT JOIN players p ON p.PlayerID = s.player_id "
 				+ "LEFT JOIN players b ON b.PlayerID = s.bowler INNER JOIN howout h ON h.HowOutID = s.how_out "
-				+ "WHERE s.game_id = ? "
-				+ "AND s.how_out = 1 "
-				+ "ORDER BY s.innings_id , "
-				+ "s.batting_position ;";
+				+ "WHERE s.game_id = ? " + "AND s.how_out = 1 " + "ORDER BY s.innings_id , " + "s.batting_position ;";
 
 		List<Map<String, Object>> extras = jdbcTemplate.queryForList(sql, new Object[] { gameId });
 
 		/*
-		 * updatFname();
-		 * try{
-		 * updatLname();
-		 * } catch (Exception e){
-		 * throw e;
-		 * }
+		 * updatFname(); try{ updatLname(); } catch (Exception e){ throw e; }
 		 */
 		return extras;
 
@@ -221,8 +199,7 @@ public class TeamDaoImpl implements TeamDao {
 	@Override
 	public List<Seasons> getSeasonGroups(String year) {
 		List<Seasons> groups = new ArrayList<Seasons>();
-		String sql = "SELECT DISTINCT co.conferenceAbbrev, s.seasonName "
-				+ "from  conferencemanagement co "
+		String sql = "SELECT DISTINCT co.conferenceAbbrev, s.seasonName " + "from  conferencemanagement co "
 				+ "INNER JOIN ladder la ON la.conference = co.ConferenceID "
 				+ "INNER JOIN SEASONS s on s.seasonId = la.season where  s.seasonYear = ? ";
 
@@ -247,11 +224,9 @@ public class TeamDaoImpl implements TeamDao {
 		}
 		List<Schedule> schedule = new ArrayList<Schedule>();
 		String sql = " SELECT s.seasonName,t.teamabbrev as awayteam, th.teamAbbrev as hometeam, p.playerFname as umpireFName, p.playerLName as umpireLName,sch.date,DATE_FORMAT(sch.date, '%b %e') as "
-				+ "formatted_date,s.seasonId, sch.week, grn.GroundName as ground "
-				+ "FROM schedule sch "
+				+ "formatted_date,s.seasonId, sch.week, grn.GroundName as ground " + "FROM schedule sch "
 				+ "INNER JOIN players p on sch.umpire1 =  p.playerID "
-				+ "INNER JOIN teams t on sch.awayteam = t.teamId "
-				+ "INNER JOIN teams th on sch.hometeam = th.teamId "
+				+ "INNER JOIN teams t on sch.awayteam = t.teamId " + "INNER JOIN teams th on sch.hometeam = th.teamId "
 				+ "INNER JOIN seasons s on sch.season = s.seasonId , grounds grn "
 				+ "WHERE  sch.venue = grn.GroundID AND sch.date >= NOW() and s.seasonId = IFNULL(?, s.seasonId ) ORDER BY sch.date, sch.id ";
 
@@ -310,10 +285,9 @@ public class TeamDaoImpl implements TeamDao {
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0)";
 
 		Object param = new Object[] { gameDetails.getLeagueId(), gameDetails.getSeason(), gameDetails.getWeek(),
-				gameDetails.getAwayteam(), gameDetails.getHometeam(),
-				gameDetails.getGameDate(), gameDetails.getResultWonId(), gameDetails.getForfeit(),
-				gameDetails.getMom(), gameDetails.getUmpire1(), gameDetails.getUmpire2(),
-				gameDetails.getMaxovers() };
+				gameDetails.getAwayteam(), gameDetails.getHometeam(), gameDetails.getGameDate(),
+				gameDetails.getResultWonId(), gameDetails.getForfeit(), gameDetails.getMom(), gameDetails.getUmpire1(),
+				gameDetails.getUmpire2(), gameDetails.getMaxovers() };
 
 		int rows = jdbcTemplate.update(sql, param);
 		logger.info("rows are ::" + rows);
@@ -321,12 +295,9 @@ public class TeamDaoImpl implements TeamDao {
 
 	@Override
 	public List<Map<String, Object>> findMatchByDate(int homeTeam, int awayTeam, Date matchDate) {
-		String sql = "SELECT s.* "
-				+ "FROM scorecard_game_details s "
-				+ "INNER JOIN grounds g ON s.ground_id = g.GroundID "
-				+ "INNER JOIN teams a ON s.awayteam = a.TeamID "
-				+ "INNER JOIN teams h ON s.hometeam = h.TeamID "
-				+ "LEFT JOIN teams u ON s.umpires = u.TeamID "
+		String sql = "SELECT s.* " + "FROM scorecard_game_details s "
+				+ "INNER JOIN grounds g ON s.ground_id = g.GroundID " + "INNER JOIN teams a ON s.awayteam = a.TeamID "
+				+ "INNER JOIN teams h ON s.hometeam = h.TeamID " + "LEFT JOIN teams u ON s.umpires = u.TeamID "
 				+ "LEFT JOIN teams t ON s.toss_won_id = t.TeamID "
 				+ "INNER JOIN teams b ON s.batting_first_id = b.TeamID "
 				+ "INNER JOIN teams n ON s.batting_second_id = n.TeamID "
@@ -376,11 +347,18 @@ public class TeamDaoImpl implements TeamDao {
 				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0)";
 
 		int rows = jdbcTemplate.update(sql, details.getLeagueId(), details.getSeason(), details.getWeek(),
-				details.getAwayteam(), details.getHometeam(),
-				details.getGameDate(), details.getResultWonId(), details.getForfeit(), details.getMom(),
-				details.getUmpire1(),
-				details.getUmpire2(), details.getMaxovers());
+				details.getAwayteam(), details.getHometeam(), details.getGameDate(), details.getResultWonId(),
+				details.getForfeit(), details.getMom(), details.getUmpire1(), details.getUmpire2(),
+				details.getMaxovers());
 		return rows;
+	}
+
+	public List findScorecardBattingDetailsByGameId(int gameId, int inningsId) {
+		String sql = "SELECT * FROM scorecard_batting_details s where s.game_id = ? AND s.innings_id = ?";
+		List score = jdbcTemplate.queryForList(sql, gameId, inningsId);
+		System.out.println("score: " + score);
+		return score;
+
 	}
 
 	@Override
@@ -389,173 +367,6 @@ public class TeamDaoImpl implements TeamDao {
 		List<Map<String, Object>> howOutList = jdbcTemplate.queryForList(sql);
 		return howOutList;
 
-	}
-
-	@Override
-	public int updateScorecardBattingDetails(ScorecardBattingDetails details) {
-		String sql = "scorecard_batting_details "
-				+ "(game_id,season,innings_id,player_id,batting_position,how_out,runs,assist,bowler,balls,fours,sixes,notout,team,opponent) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		int rows = jdbcTemplate.update(sql);
-		logger.info("rows are ::" + rows);
-		return rows;
-	}
-
-	@Override
-	public int updateScorecardBowlingDetails(ScorecardBowlingDetails details) {
-		String sql = "INSERT INTO scorecard_bowling_details "
-				+ "(game_id,season,innings_id,player_id,bowling_position,overs,maidens,runs,wickets,noballs,wides,team,opponent) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		int rows = jdbcTemplate.update(sql);
-		logger.info("rows are ::" + rows);
-		return rows;
-	}
-
-	@Override
-	public int updateInsertScorecardTotalDetails(ScorecardTotalDetails totalDetails) {
-
-		int rows = 0;
-		if (totalDetails.getGame_id() > 0) {
-			try {
-				rows = updateTotalsDetails(totalDetails);
-			} catch (Exception ex) {
-				logger.info("Update failed, Try to insert data");
-				rows = insertTotalsDetails(totalDetails);
-			}
-
-		} else {
-			logger.warn("Opps GameId is not provided");
-			return rows;
-		}
-		return rows;
-
-	}
-
-	private int updateTotalsDetails(ScorecardTotalDetails totalDetails) {
-
-		String sql = "UPDATE scorecard_total_details SET team=? ,wickets=? ,total=? ,overs=?  WHERE "
-				+ "game_id =? and innings_id = ?";
-		int rows = jdbcTemplate.update(sql, totalDetails.getTeam(), totalDetails.getWickets(), totalDetails.getTotal(),
-				totalDetails.getOvers(), totalDetails.getGame_id(), totalDetails.getInnings_id());
-		logger.info("rows are ::" + rows);
-		if (rows > 1) {
-			logger.warn("More than one Rows updated");
-		}
-
-		return rows;
-	}
-
-	private int insertTotalsDetails(ScorecardTotalDetails totalDetails) {
-
-		String sql = "INSERT INTO scorecard_total_details "
-				+ "(game_id,innings_id,team,wickets,total,overs) "
-				+ "VALUES (?,?,?,?,?,?)";
-		int rows = jdbcTemplate.update(sql, totalDetails.getGame_id(), totalDetails.getInnings_id(),
-				totalDetails.getTeam(), totalDetails.getWickets(), totalDetails.getTotal(), totalDetails.getOvers());
-		logger.info("rows are ::" + rows);
-		return rows;
-	}
-
-	@Override
-	public int updateInsertScorecardFowDetails1(ScorecardFowDetails fowDetails) {
-		int rows = 0;
-		if (fowDetails.getGame_id() > 0) {
-			try {
-				rows = updateFowDetails(fowDetails);
-			} catch (Exception ex) {
-				logger.info("Update failed, Try to insert data");
-				rows = insertFowDetails(fowDetails);
-			}
-
-		} else {
-			logger.warn("Opps GameId is not provided");
-			return rows;
-		}
-		return rows;
-
-	}
-
-	public int updateFowDetails(ScorecardFowDetails fowDetails) {
-		String sql = "UPDATE SCORECARD_FOW_DETAILS SET fow1 = ?,fow2= ?,fow3= ?,fow4= ?,fow5= ?,fow6= ?,fow7= ?,fow8= ?,fow9= ?,fow10= ? WHERE "
-				+ "game_id =? and innings_id = ?";
-		int rows = jdbcTemplate.update(sql, fowDetails.getFow1(),
-				fowDetails.getFow2(), fowDetails.getFow3(), fowDetails.getFow4(), fowDetails.getFow5(),
-				fowDetails.getFow6(), fowDetails.getFow7(), fowDetails.getFow8(), fowDetails.getFow9(),
-				fowDetails.getFow10(), fowDetails.getGame_id(), fowDetails.getInnings_id());
-		logger.info("rows are ::" + rows);
-		if (rows > 1) {
-			logger.warn("More than one Rows updated");
-		}
-
-		return rows;
-
-	};
-
-	public int insertFowDetails(ScorecardFowDetails fowDetails) {
-		String sql = "INSERT INTO SCORECARD_FOW_DETAILS "
-				+ "(game_id,innings_id,fow1,fow2,fow3,fow4,fow5,fow6,fow7,fow8,fow9,fow10) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
-		int rows = jdbcTemplate.update(sql, fowDetails.getGame_id(), fowDetails.getInnings_id(), fowDetails.getFow1(),
-				fowDetails.getFow2(), fowDetails.getFow3(), fowDetails.getFow4(), fowDetails.getFow5(),
-				fowDetails.getFow6(), fowDetails.getFow7(), fowDetails.getFow8(), fowDetails.getFow9(),
-				fowDetails.getFow10());
-		logger.info("rows are ::" + rows);
-		return rows;
-	}
-
-	@Override
-	public int updateInsertScorecardExtrasDetails(SorecardExtrasDetails extrasDetails) {
-		int rows = 0;
-
-		if (extrasDetails.getGame_id() > 0
-				&& (extrasDetails.getInnings_id() == 1 || extrasDetails.getInnings_id() == 2)) {
-			try {
-				rows = updateExtrasDetails(extrasDetails);
-
-				// Making sure to Insert record if no row is updated
-				if (rows == 0) {
-					logger.warn("NO row is updated, Try to insert data");
-					rows = insertExtrasDetails(extrasDetails);
-				}
-			} catch (Exception ex) {
-				logger.info("Update failed, Try to insert data");
-				rows = insertExtrasDetails(extrasDetails);
-			}
-
-		} else {
-			logger.error("Opps Game Id or Innings Id is not Correct");
-			return rows;
-		}
-		return rows;
-
-	}
-
-	private int insertExtrasDetails(SorecardExtrasDetails extrasDetails) {
-		String sql = "INSERT INTO scorecard_extras_details "
-				+ "(game_id,innings_id,legbyes,byes,wides,noballs,total) "
-				+ "VALUES (?,?,?,?,?,?,?)";
-		int rows = jdbcTemplate.update(sql, extrasDetails.getGame_id(), extrasDetails.getInnings_id(),
-				extrasDetails.getLegbyes(), extrasDetails.getByes(), extrasDetails.getWides(),
-				extrasDetails.getNoballs(), extrasDetails.getTotal());
-		logger.info("R # of rows inserted are ::" + rows);
-		if (rows < 1) {
-			logger.error("Failed to Insert data");
-		}
-		return rows;
-	}
-
-	private int updateExtrasDetails(SorecardExtrasDetails extrasDetails) {
-		String sql = "UPDATE scorecard_extras_details SET legbyes=? ,byes=? ,wides=? ,noballs=?, total=?  WHERE "
-				+ "game_id =? and innings_id = ?";
-		int rows = jdbcTemplate.update(sql, extrasDetails.getLegbyes(), extrasDetails.getByes(),
-				extrasDetails.getWides(), extrasDetails.getNoballs(), extrasDetails.getTotal(),
-				extrasDetails.getGame_id(), extrasDetails.getInnings_id());
-		logger.info("rows are ::" + rows);
-		if (rows > 1) {
-			logger.warn("More than one Rows updated");
-		}
-
-		return rows;
 	}
 
 }
