@@ -26,7 +26,6 @@ import com.cricket.austin.zulfi.model.Schedule;
 import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
-import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
 import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
@@ -385,10 +384,10 @@ public class AppController {
 	}
 
 	@RequestMapping(value = { "/updateScorecardBowlingDetails" }, method = RequestMethod.PUT)
-	public ResponseEntity<Integer> updateScorecardBowlingDetails(@RequestBody ScorecardBowling match,
-			ScorecardBowlingDetails bowler) throws Exception {
-		logger.info("In AppController.ScorecardBowlingDetails");
-		int rows = matchScoringService.updateScorecardBowlingDetails(match, bowler);
+	public ResponseEntity<Integer> updateScorecardBowlingDetails(@RequestBody ScorecardBowling details)
+			throws Exception {
+		logger.info("In AppController.ScorecardBowlingDetails => " + details);
+		int rows = matchScoringService.inertUupdateScorecardBowlingDetails(details);
 		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
 	}
 }

@@ -10,7 +10,6 @@ import com.cricket.austin.zulfi.controller.AppController;
 import com.cricket.austin.zulfi.dao.MatchScoringDao;
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
-import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
 import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
@@ -63,8 +62,9 @@ public class MatchScorningServiceImpl implements MatchScoringService {
 	}
 
 	@Override
-	public int updateScorecardBowlingDetails(ScorecardBowling match, ScorecardBowlingDetails bowler) {
-		return matchScoringDao.updateInsertScorecardBowlingDetails(match, bowler);
+	public int inertUupdateScorecardBowlingDetails(ScorecardBowling details) {
+		return matchScoringDao.inertUupdateScorecardBowlingDetails(details);
+
 	}
 
 }

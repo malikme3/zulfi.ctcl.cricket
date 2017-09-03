@@ -84,7 +84,7 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 			return rows;
 		}
 
-		List row = teamDaoImpl.findScorecardBattingDetailsByGameId(2065, 1);
+		List row = teamDaoImpl.findScorecardBattingDetailsByGameId(match);
 		if (row.isEmpty() || row.size() < 1) {
 			logger.info("Data don't exist, Try to insert data");
 			try {
@@ -158,21 +158,87 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 	}
 
 	@Override
-	public int updateInsertScorecardBowlingDetails(ScorecardBowling match, ScorecardBowlingDetails bowler) {
+	public int inertUupdateScorecardBowlingDetails(ScorecardBowling details) {
+
 		int rows = 0;
-		if (match.getGame_id() > 0) {
+		MatchDetails match = details.getMatchInfo();
+		if (match.getGame_id() < 1) {
+			logger.warn("Ooopps GameId is not provided in inertUupdateScorecardBowlingDetails gameId = "
+					+ match.getGame_id());
+			return rows;
+		}
+
+		List row = teamDaoImpl.findScorecardBowlingDetailsByGameId(match);
+		if (row.isEmpty() || row.size() < 1) {
+			logger.info("Data don't exist, Try to insert data");
 			try {
-				rows = updateTotalsDetails(match, bowler);
+				rows = insertScorecardBowlingDetails(details);
 			} catch (Exception ex) {
-				logger.info("Update failed, Try to insert data");
-				rows = insertTotalsDetails(match, bowler);
+				logger.info("Insert failed, Try update data");
+				rows = updatBowlingDetails(details);
 			}
 
 		} else {
-			logger.warn("Ooopps GameId is not provided");
+			logger.info("Data exist, Try update bowling details");
+			rows = updatBowlingDetails(details);
 			return rows;
 		}
 		return rows;
+	}
+
+	public int updatBowlingDetails(ScorecardBowling details) {
+		int rows = 0;
+		MatchDetails match = details.getMatchInfo();
+		for (ScorecardBowlingDetails bowler : details.getBowlingDetails()) {
+			if (bowler.getPlayer_id() > 0) {
+				rows = updateScorecardBowlingDetails(match, bowler);
+			} else {
+				logger.warn("updatBowlingDetails ::> No Bowler's playerId exist => " + bowler.getPlayer_id());
+			}
+		}
+		return rows;
+	};
+
+	public int updateScorecardBowlingDetails(MatchDetails match, ScorecardBowlingDetails bowler) {
+		String sql = "UPDATE scorecard_bowling_details "
+				+ " SET player_id=?, overs=?, maidens=?, runs=?, wickets=?, noballs=?, wides=? "
+				+ "WHERE bowling_position=? AND team=? AND opponent=? AND game_id=? AND season=? AND innings_id=? ";
+
+		int rows = jdbcTemplate.update(sql, bowler.getPlayer_id(), bowler.getOvers(), bowler.getMaidens(),
+				bowler.getRuns(), bowler.getWickets(), bowler.getNoballs(), bowler.getWides(),
+				bowler.getBowling_position(), match.getTeam(), match.getOpponent(), match.getGame_id(),
+				match.getSeason(), match.getInnings_id());
+		logger.info("rows are ::" + rows);
+
+		return 0;
+	}
+
+	public int insertScorecardBowlingDetails(ScorecardBowling details) {
+
+		String sql = "INSERT INTO  scorecard_bowling_details (game_id,season,innings_id,player_id, bowling_position,"
+				+ "overs,maidens,runs,wickets,noballs,wides,team,opponent) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+		List<Object[]> parameters = new ArrayList<Object[]>();
+
+		MatchDetails match = details.getMatchInfo();
+
+		for (ScorecardBowlingDetails bowler : details.getBowlingDetails()) {
+			parameters.add(new Object[] { match.getGame_id(), match.getSeason(), match.getInnings_id(),
+					bowler.getPlayer_id(), bowler.getBowling_position(), bowler.getOvers(), bowler.getMaidens(),
+					bowler.getRuns(), bowler.getWickets(), bowler.getNoballs(), bowler.getWides(), match.getTeam(),
+					match.getOpponent() });
+		}
+		int rows = 0;
+		try {
+			int[] rowsArray = jdbcTemplate.batchUpdate(sql, parameters);
+			logger.info("rows are ::" + rowsArray);
+		} catch (Exception ex) {
+			logger.warn("Update Batch exception => " + ex);
+		}
+
+		logger.info("rows are ::" + rows);
+
+		return 0;
 	}
 
 	private int updateTotalsDetails(ScorecardBowling match, ScorecardBowlingDetails bowler) {

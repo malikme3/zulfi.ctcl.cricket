@@ -2,7 +2,6 @@ package com.cricket.austin.zulfi.dao;
 
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
-import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
 import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
@@ -17,7 +16,8 @@ public interface MatchScoringDao {
 
 	void submitScore_gameDetails(ScorecardGameDetails gameDetails);
 
-	int updateInsertScorecardBowlingDetails(ScorecardBowling match, ScorecardBowlingDetails bowler);
+	// int updateInsertScorecardBowlingDetails(ScorecardBowling match,
+	// ScorecardBowlingDetails bowler);
 
 	int updateInsertScorecardExtrasDetails(SorecardExtrasDetails details);
 
@@ -26,5 +26,7 @@ public interface MatchScoringDao {
 	int updateInsertScorecardFowDetails1(ScorecardFowDetails details);
 
 	int updateInsertScorecardBattingDetails(ScorecardBatting details);
+
+	int inertUupdateScorecardBowlingDetails(ScorecardBowling details);
 
 }

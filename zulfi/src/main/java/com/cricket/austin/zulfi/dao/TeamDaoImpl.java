@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.cricket.austin.zulfi.model.Ladder;
+import com.cricket.austin.zulfi.model.MatchDetails;
 import com.cricket.austin.zulfi.model.Schedule;
 import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
@@ -353,9 +354,19 @@ public class TeamDaoImpl implements TeamDao {
 		return rows;
 	}
 
-	public List findScorecardBattingDetailsByGameId(int gameId, int inningsId) {
-		String sql = "SELECT * FROM scorecard_batting_details s where s.game_id = ? AND s.innings_id = ?";
-		List score = jdbcTemplate.queryForList(sql, gameId, inningsId);
+	public List findScorecardBattingDetailsByGameId(MatchDetails match) {
+		String sql = "SELECT * FROM scorecard_batting_details s where s.game_id = ? AND s.innings_id = ? AND s.team = ? AND s.opponent";
+		List score = jdbcTemplate.queryForList(sql, match.getGame_id(), match.getInnings_id(), match.getTeam(),
+				match.getOpponent());
+		System.out.println("score: " + score);
+		return score;
+
+	}
+
+	public List findScorecardBowlingDetailsByGameId(MatchDetails match) {
+		String sql = "SELECT * FROM scorecard_bowling_details s where s.game_id =? AND s.innings_id =? AND s.team =? AND s.opponent =? ";
+		List score = jdbcTemplate.queryForList(sql, match.getGame_id(), match.getInnings_id(), match.getTeam(),
+				match.getOpponent());
 		System.out.println("score: " + score);
 		return score;
 
