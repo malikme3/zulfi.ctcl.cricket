@@ -302,8 +302,7 @@ public class AppController {
 	}
 
 	@RequestMapping(value = { "/submit/score/scorecardGameDetails" }, method = RequestMethod.POST)
-	public ResponseEntity<Void> updateScorecardGameDetails(@RequestBody ScorecardGameDetails gameDetails)
-			throws Exception {
+	public ResponseEntity updateScorecardGameDetails(@RequestBody ScorecardGameDetails gameDetails) throws Exception {
 		logger.info("In AppController.updateScorecardGameDetails" + gameDetails);
 		int rows = matchScoringService.updateScorecardGameDetails(gameDetails);
 		logger.info("rows#  " + rows);
@@ -347,7 +346,7 @@ public class AppController {
 
 		matchScoringService.submitResults(home_team);
 		matchScoringService.submitResults(away_team);
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity(new ScorecardGameDetails(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardExtrasDetails" }, method = RequestMethod.PUT)

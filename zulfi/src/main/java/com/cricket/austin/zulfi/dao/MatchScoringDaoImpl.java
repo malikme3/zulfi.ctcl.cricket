@@ -62,14 +62,17 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 
 	@Override
 	public int updateScorecardGameDetails(ScorecardGameDetails details) {
+		details.setReport("Excellent Match, well played both teams");
 		String sql = "INSERT INTO scorecard_game_details "
-				+ "(league_id,season,week,awayteam,hometeam,game_date,result_won_id,forfeit,mom,umpire1,umpire2,maxovers,isactive) "
-				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,0)";
+				+ "(league_id,season,week,awayteam,hometeam,game_date,result,result_won_id,forfeit,mom,umpire1,umpire2,maxovers,isactive, "
+				+ "ground_id,batting_first_id,batting_second_id,report,toss_won_id) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,?)";
 
 		int rows = jdbcTemplate.update(sql, details.getLeagueId(), details.getSeason(), details.getWeek(),
-				details.getAwayteam(), details.getHometeam(), details.getGameDate(), details.getResultWonId(),
-				details.getForfeit(), details.getMom(), details.getUmpire1(), details.getUmpire2(),
-				details.getMaxovers());
+				details.getAwayteam(), details.getHometeam(), details.getGameDate(), details.getResult(),
+				details.getResultWonId(), details.getForfeit(), details.getMom(), details.getUmpire1(),
+				details.getUmpire2(), details.getMaxovers(), details.getGroundId(), details.getBattingFirstId(),
+				details.getBattingSecondId(), details.getReport(), details.getTossWonId());
 		return rows;
 	}
 
