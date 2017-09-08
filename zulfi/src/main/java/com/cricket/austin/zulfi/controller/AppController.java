@@ -22,6 +22,7 @@ import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Leagues;
 import com.cricket.austin.zulfi.model.Player;
 import com.cricket.austin.zulfi.model.PlayerCtcl;
+import com.cricket.austin.zulfi.model.RecordsInputs;
 import com.cricket.austin.zulfi.model.Schedule;
 import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardBatting;
@@ -33,6 +34,7 @@ import com.cricket.austin.zulfi.model.Seasons;
 import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
 import com.cricket.austin.zulfi.model.SubmitResults;
 import com.cricket.austin.zulfi.model.Teams;
+import com.cricket.austin.zulfi.service.BattingRecordsService;
 import com.cricket.austin.zulfi.service.MatchScoringService;
 import com.cricket.austin.zulfi.service.TeamService;
 import com.cricket.austin.zulfi.service.UserService;
@@ -47,6 +49,9 @@ public class AppController {
 	UserService userService;
 	@Autowired
 	MatchScoringService matchScoringService;
+
+	@Autowired
+	BattingRecordsService battingRecordsService;
 
 	static final Logger logger = LoggerFactory.getLogger(AppController.class);
 
@@ -65,6 +70,20 @@ public class AppController {
 		 * to return HttpStatus.NOT_FOUND }
 		 */
 		return new ResponseEntity<List<Player>>(HttpStatus.OK);
+	}
+
+	// Getting Players for Match Selection
+	// @RequestMapping(value = { "/basic/scorecard/" }, method =
+	// RequestMethod.GET)
+	@RequestMapping(value = "/records/battings/", method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> getBattingRecords() {
+		RecordsInputs input = new RecordsInputs();
+		input.setTeamId("47");
+		input.setSeasonId("30");
+		input.setSeasonYear("2017");
+
+		List<Map<String, Object>> recordsLis = battingRecordsService.battingRecords(input);
+		return new ResponseEntity<List<Map<String, Object>>>(recordsLis, HttpStatus.OK);
 	}
 
 	// Getting Players for Match Selection
