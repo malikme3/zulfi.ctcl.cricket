@@ -5,14 +5,10 @@ public class RecordsInputs {
 	public String seasonId;
 	public String seasonYear;
 	public String teamId;
-	public String clubdId;
+	public String clubId;
 
 	public String getPlayerId() {
 		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
 	}
 
 	public String getSeasonId() {
@@ -39,18 +35,22 @@ public class RecordsInputs {
 		this.teamId = teamId;
 	}
 
-	public String getClubdId() {
-		return clubdId;
+	public String getClubId() {
+		return clubId;
 	}
 
-	public void setClubdId(String clubdId) {
-		this.clubdId = clubdId;
+	public void setClubId(String clubId) {
+		this.clubId = clubId;
+	}
+
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
 	}
 
 	@Override
 	public String toString() {
 		return "RecordsInputs [playerId=" + playerId + ", seasonId=" + seasonId + ", seasonYear=" + seasonYear
-				+ ", teamId=" + teamId + ", clubdId=" + clubdId + "]";
+				+ ", teamId=" + teamId + ", clubId=" + clubId + "]";
 	}
 
 }

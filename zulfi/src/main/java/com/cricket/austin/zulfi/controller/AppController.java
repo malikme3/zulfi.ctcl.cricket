@@ -76,12 +76,10 @@ public class AppController {
 	// @RequestMapping(value = { "/basic/scorecard/" }, method =
 	// RequestMethod.GET)
 	@RequestMapping(value = "/records/battings/", method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> getBattingRecords() {
+	public ResponseEntity<List<Map<String, Object>>> getBattingRecords(@RequestParam String team, String player) {
 		RecordsInputs input = new RecordsInputs();
-		input.setTeamId("47");
-		input.setSeasonId("30");
-		input.setSeasonYear("2017");
-
+		input.setTeamId(team);
+		input.setPlayerId(player);
 		List<Map<String, Object>> recordsLis = battingRecordsService.battingRecords(input);
 		return new ResponseEntity<List<Map<String, Object>>>(recordsLis, HttpStatus.OK);
 	}
