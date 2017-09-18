@@ -52,7 +52,7 @@ public class BattingRecordsDaoImpl implements BattingRecordsDao {
 				+ "INNER JOIN teams t ON s.team = t.teamID "
 				+ "INNER JOIN clubs c ON t.clubId = c.clubId "
 				+ "WHERE s.how_out != 1 "
-				+ "AND s.player_id = IFNULL(?, s.player_id ) "
+				+ "AND s.player_id = IFNULL(null, s.player_id ) "
 				+ "AND c.clubId = IFNULL(?, c.clubId ) "
 				+ "AND n.SeasonID = IFNULL(?, n.SeasonID ) "
 				+ "AND n.SeasonYear = IFNULL(?, n.SeasonYear ) "
@@ -62,8 +62,8 @@ public class BattingRecordsDaoImpl implements BattingRecordsDao {
 				+ "DESC, p.PlayerLName, p.PlayerFName";
 		// @formatter:on
 
-		List<Map<String, Object>> records = jdbcTemplate.queryForList(sql, inputs.getPlayerId(), inputs.getClubId(),
-				inputs.getSeasonId(), inputs.getSeasonYear(), inputs.getTeamId());
+		List<Map<String, Object>> records = jdbcTemplate.queryForList(sql, inputs.getClubId(), inputs.getSeasonId(),
+				inputs.getSeasonYear(), inputs.getTeamId());
 
 		return records;
 	}

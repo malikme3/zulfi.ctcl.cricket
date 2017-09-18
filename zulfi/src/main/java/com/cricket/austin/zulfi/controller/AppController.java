@@ -23,8 +23,6 @@ import com.cricket.austin.zulfi.model.Leagues;
 import com.cricket.austin.zulfi.model.Player;
 import com.cricket.austin.zulfi.model.PlayerCtcl;
 import com.cricket.austin.zulfi.model.RecordsInputs;
-import com.cricket.austin.zulfi.model.Schedule;
-import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
@@ -76,10 +74,14 @@ public class AppController {
 	// @RequestMapping(value = { "/basic/scorecard/" }, method =
 	// RequestMethod.GET)
 	@RequestMapping(value = "/records/battings/", method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> getBattingRecords(@RequestParam String team, String player) {
+	public ResponseEntity<List<Map<String, Object>>> getBattingRecords(@RequestParam String team, String player,
+			String club, String season, String year) {
 		RecordsInputs input = new RecordsInputs();
 		input.setTeamId(team);
 		input.setPlayerId(player);
+		input.setClubId(club);
+		input.setSeasonId(season);
+		input.setSeasonYear(year);
 		List<Map<String, Object>> recordsLis = battingRecordsService.battingRecords(input);
 		return new ResponseEntity<List<Map<String, Object>>>(recordsLis, HttpStatus.OK);
 	}
@@ -150,10 +152,9 @@ public class AppController {
 
 	// Getting season groups
 	@RequestMapping(value = "/matches/schedule", method = RequestMethod.GET)
-	public ResponseEntity<List<Schedule>> MatchesSchedule(@RequestParam String seasonId) {
-
-		List<Schedule> schedule = teamServiceMatch.getSchedule(seasonId);
-		return new ResponseEntity<List<Schedule>>(schedule, HttpStatus.OK);
+	public ResponseEntity<List<Map<String, Object>>> MatchesSchedule(@RequestParam String seasonId) {
+		List<Map<String, Object>> schedule = teamServiceMatch.getSchedule(seasonId);
+		return new ResponseEntity<List<Map<String, Object>>>(schedule, HttpStatus.OK);
 	}
 
 	// Getting points
@@ -212,10 +213,10 @@ public class AppController {
 	// Match Basic score information
 
 	@RequestMapping(value = { "/basic/scorecard/" }, method = RequestMethod.GET)
-	public ResponseEntity<List<ScoreCardBasic>> basicScoreCard(@RequestParam int seasonId) {
+	public ResponseEntity<List<Map<String, Object>>> basicScoreCard(@RequestParam int seasonId) {
 		logger.info("In AppController.basicScoreCard(" + seasonId + ")");
-		List<ScoreCardBasic> position = teamServiceMatch.getbasicScoreCard(seasonId);
-		return new ResponseEntity<List<ScoreCardBasic>>(position, HttpStatus.OK);
+		List<Map<String, Object>> position = teamServiceMatch.getbasicScoreCard(seasonId);
+		return new ResponseEntity<List<Map<String, Object>>>(position, HttpStatus.OK);
 	}
 
 	// Match Detailed score information
@@ -224,6 +225,23 @@ public class AppController {
 		logger.info("In AppController.basicScoreCard(" + gameId + ")");
 		List<Map<String, Object>> detailedScore = teamServiceMatch.getDetailedScore(gameId);
 		return new ResponseEntity<List<Map<String, Object>>>(detailedScore, HttpStatus.OK);
+	}
+
+	// getBattingScorecardByInnings(int gameId, int innings)
+	// Match Detailed score information
+	@RequestMapping(value = { "/scorecard/Batting/byInning" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> detailedScoreCardByBatInnings(@RequestParam int gameId,
+			int inning) {
+		logger.info("In AppController.getBattingScorecardByInnings(" + gameId + ")");
+		List<Map<String, Object>> scoreCard = matchScoringService.getBattingScorecardByInnings(gameId, inning);
+		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = { "/scorecard/scorcardInfo/byInning" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> scorecardInfoByInnings(@RequestParam int gameId, int inning) {
+		logger.info("In AppController.getScorecardInfoByInnings(" + gameId + ")");
+		List<Map<String, Object>> scoreCard = matchScoringService.getScorecardInfoByInnings(gameId, inning);
+		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
 	}
 
 	// Match Detailed bowling information

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.cricket.austin.zulfi.model.Ladder;
-import com.cricket.austin.zulfi.model.Schedule;
-import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
 import com.cricket.austin.zulfi.model.Seasons;
 
@@ -15,11 +13,11 @@ public interface TeamService {
 
 	public List<Ladder> getTeamsIdTeamsAbbrv(String seasonYear, String seasonName);
 
-	public List<ScoreCardBasic> getbasicScoreCard(int seasonId);
+	public List<Map<String, Object>> getbasicScoreCard(int seasonId);
 
 	public List<Seasons> getSeasonGroups(String year);
 
-	public List<Schedule> getSchedule(String seasonId);
+	public List<Map<String, Object>> getSchedule(String seasonId);
 
 	public List<Map<String, Object>> getDetailedScore(int gameId);
 

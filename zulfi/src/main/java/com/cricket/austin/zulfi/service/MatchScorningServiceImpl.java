@@ -1,5 +1,8 @@
 package com.cricket.austin.zulfi.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +68,16 @@ public class MatchScorningServiceImpl implements MatchScoringService {
 	public int inertUupdateScorecardBowlingDetails(ScorecardBowling details) {
 		return matchScoringDao.inertUupdateScorecardBowlingDetails(details);
 
+	}
+
+	@Override
+	public List<Map<String, Object>> getBattingScorecardByInnings(int gameId, int innings) {
+		return matchScoringDao.getBattingScorecardByInnings(gameId, innings);
+	}
+
+	@Override
+	public List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings) {
+		return matchScoringDao.getScorecardInfoByInnings(gameId, innings);
 	}
 
 }

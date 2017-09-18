@@ -17,8 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.MatchDetails;
-import com.cricket.austin.zulfi.model.Schedule;
-import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
 import com.cricket.austin.zulfi.model.Seasons;
 import com.cricket.austin.zulfi.model.SubmitResults;
@@ -98,32 +96,25 @@ public class TeamDaoImpl implements TeamDao {
 	};
 
 	@Override
-	public List<ScoreCardBasic> getbasicScoreCard(int seasonId) {
+	public List<Map<String, Object>> getbasicScoreCard(int seasonId) {
 
-		List<ScoreCardBasic> teamsNames = new ArrayList<ScoreCardBasic>();
-		String sql = " SELECT  s.game_id, s.game_date, p.playerFName,p.playerLName,  s.result,a.TeamAbbrev AS AwayAbbrev, h.TeamAbbrev AS HomeAbbrev "
-				+ "FROM  scorecard_game_details s " + "INNER JOIN  teams a ON s.awayteam = a.TeamID "
-				+ "INNER JOIN  teams h ON s.hometeam = h.TeamID " + "INNER JOIN players p on s.mom = p.playerID	"
-				+ "WHERE  s.season= ? AND s.isactive=0	" + "ORDER BY  s.week, s.game_date, s.game_id";
+		// @formatter:off
+		String sql = " SELECT  s.game_id, se.seasonName as season, s.game_date, "
+				+ "concat(p.playerFName, ' ', p.playerLName) as man_of_the_match, "
+				+ "s.result,a.TeamAbbrev AS guest_team, h.TeamAbbrev AS host_team "
+				+ "FROM  scorecard_game_details s "
+				+ "INNER JOIN  teams a ON s.awayteam = a.TeamID "
+				+ "INNER JOIN  teams h ON s.hometeam = h.TeamID "
+				+ "INNER JOIN players p on s.mom = p.playerID "
+				+ "INNER JOIN seasons se on s.season = se.seasonId "
+				+ "WHERE s.season= ? "
+				+ "AND s.isactive= 0 "
+				+ "ORDER BY  s.week, s.game_date, s.game_id";
+		// @formatter:on
 
 		List<Map<String, Object>> teamNames = jdbcTemplate.queryForList(sql, new Object[] { seasonId });
 
-		for (Map row : teamNames) {
-
-			ScoreCardBasic teamPoints = new ScoreCardBasic();
-
-			teamPoints.setGuest_team((String) row.get("AwayAbbrev"));
-			teamPoints.setGame_id((int) row.get("game_id"));
-			teamPoints.setHost_team((String) row.get("HomeAbbrev"));
-			teamPoints.setPlayer_first_name((String) row.get("playerFName"));
-			teamPoints.setPlayer_last_name((String) row.get("playerLName"));
-			teamPoints.setMatch_date((Date) row.get("game_date"));
-			teamPoints.setMatch_status((String) row.get("result"));
-
-			teamsNames.add(teamPoints);
-		}
-
-		return teamsNames;
+		return teamNames;
 	}
 
 	@Override
@@ -219,35 +210,22 @@ public class TeamDaoImpl implements TeamDao {
 	}
 
 	@Override
-	public List<Schedule> getSchedule(String seasonId) {
+	public List<Map<String, Object>> getSchedule(String seasonId) {
 		if (seasonId.equalsIgnoreCase("null")) {
 			seasonId = null;
 		}
-		List<Schedule> schedule = new ArrayList<Schedule>();
-		String sql = " SELECT s.seasonName,t.teamabbrev as awayteam, th.teamAbbrev as hometeam, p.playerFname as umpireFName, p.playerLName as umpireLName,sch.date,DATE_FORMAT(sch.date, '%b %e') as "
-				+ "formatted_date,s.seasonId, sch.week, grn.GroundName as ground " + "FROM schedule sch "
-				+ "INNER JOIN players p on sch.umpire1 =  p.playerID "
+
+		/** Schedule for last 6 month and future **/
+		int days = 180;
+		String sql = " SELECT s.seasonName, concat(th.teamAbbrev, ' VS ', t.teamabbrev) as teams , concat(p.playerFname, ' ', p.playerLName) as umpireName,sch.date,DATE_FORMAT(sch.date, '%b %e') as "
+				+ "formatted_date,s.seasonId, sch.week, grn.GroundName as ground , grn.GroundAbbrev as groundName "
+				+ "FROM schedule sch " + "INNER JOIN players p on sch.umpire1 =  p.playerID "
 				+ "INNER JOIN teams t on sch.awayteam = t.teamId " + "INNER JOIN teams th on sch.hometeam = th.teamId "
 				+ "INNER JOIN seasons s on sch.season = s.seasonId , grounds grn "
-				+ "WHERE  sch.venue = grn.GroundID AND sch.date >= NOW() and s.seasonId = IFNULL(?, s.seasonId ) ORDER BY sch.date, sch.id ";
+				+ "WHERE  sch.venue = grn.GroundID AND  sch.date >= NOW() - INTERVAL ? DAY and s.seasonId = IFNULL(?, s.seasonId ) ORDER BY sch.date, sch.id ";
 
-		List<Map<String, Object>> listSchedule = jdbcTemplate.queryForList(sql, new Object[] { seasonId });
-		for (Map row : listSchedule) {
-			Schedule schd = new Schedule();
-			schd.setSeasonName((String) row.get("seasonName"));
-			schd.setAwayTeam((String) row.get("awayteam"));
-			schd.setHomeTeam((String) row.get("hometeam"));
-			schd.setUmpireFName((String) row.get("umpireFName"));
-			schd.setUmpireLName((String) row.get("umpireLName"));
-			schd.setDate((Date) row.get("date"));
-			schd.setFormattedDate((String) row.get("formatted_date"));
-			schd.setSeasonId((int) row.get("seasonId"));
-			schd.setWeek((int) row.get("week"));
-			schd.setGround((String) row.get("ground"));
-			schedule.add(schd);
-		}
-
-		return schedule;
+		List<Map<String, Object>> listSchedule = jdbcTemplate.queryForList(sql, new Object[] { days, seasonId });
+		return listSchedule;
 
 	}
 

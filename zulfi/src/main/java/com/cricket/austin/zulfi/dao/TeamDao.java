@@ -5,15 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.cricket.austin.zulfi.model.Ladder;
-import com.cricket.austin.zulfi.model.Schedule;
-import com.cricket.austin.zulfi.model.ScoreCardBasic;
-import com.cricket.austin.zulfi.model.ScorecardBattingDetails;
-import com.cricket.austin.zulfi.model.ScorecardBowlingDetails;
-import com.cricket.austin.zulfi.model.ScorecardFowDetails;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
-import com.cricket.austin.zulfi.model.ScorecardTotalDetails;
 import com.cricket.austin.zulfi.model.Seasons;
-import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
 import com.cricket.austin.zulfi.model.SubmitResults;
 
 public interface TeamDao {
@@ -21,11 +14,11 @@ public interface TeamDao {
 
 	List<Ladder> getTeamsIdTeamsAbbrv(String seasonYear, String seasonName);
 
-	List<ScoreCardBasic> getbasicScoreCard(int seasonId);
+	List<Map<String, Object>> getbasicScoreCard(int seasonId);
 
 	List<Seasons> getSeasonGroups(String year);
 
-	List<Schedule> getSchedule(String seasonId);
+	List<Map<String, Object>> getSchedule(String seasonId);
 
 	List<Map<String, Object>> getDetailedScore(int gameId);
 

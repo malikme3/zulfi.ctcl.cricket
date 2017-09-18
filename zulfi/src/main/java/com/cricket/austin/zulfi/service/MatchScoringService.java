@@ -1,5 +1,8 @@
 package com.cricket.austin.zulfi.service;
 
+import java.util.List;
+import java.util.Map;
+
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
@@ -26,4 +29,7 @@ public interface MatchScoringService {
 
 	public int inertUupdateScorecardBowlingDetails(ScorecardBowling match);
 
+	public List<Map<String, Object>> getBattingScorecardByInnings(int gameId, int innings);
+
+	public List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings);
 }

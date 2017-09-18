@@ -14,8 +14,6 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import com.cricket.austin.zulfi.dao.MatchScoringDao;
 import com.cricket.austin.zulfi.dao.TeamDao;
 import com.cricket.austin.zulfi.model.Ladder;
-import com.cricket.austin.zulfi.model.Schedule;
-import com.cricket.austin.zulfi.model.ScoreCardBasic;
 import com.cricket.austin.zulfi.model.ScorecardGameDetails;
 import com.cricket.austin.zulfi.model.Seasons;
 
@@ -38,7 +36,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public List<ScoreCardBasic> getbasicScoreCard(int seasonId) {
+	public List<Map<String, Object>> getbasicScoreCard(int seasonId) {
 		return teamDao.getbasicScoreCard(seasonId);
 	}
 
@@ -48,7 +46,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public List<Schedule> getSchedule(String seasonId) {
+	public List<Map<String, Object>> getSchedule(String seasonId) {
 		return teamDao.getSchedule(seasonId);
 	}
 

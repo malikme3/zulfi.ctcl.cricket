@@ -2,6 +2,7 @@ package com.cricket.austin.zulfi.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -405,4 +406,71 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 		return rows;
 	}
 
+	@Override
+	public List<Map<String, Object>> getBattingScorecardByInnings(int gameId, int innings) {
+
+		// @formatter:off
+		String sql = "SELECT s.game_id, s.innings_id, s.batting_position, s.runs, s.balls, s.fours, s.sixes, "
+				+ "p.PlayerID AS batter_id, "
+				+ "h.HowOutID, h.HowOutName, h.HowOutAbbrev, "
+				+"round(s.runs/s.balls*100.0,2) as strike_rate, "
+				+ "CONCAT(IFNULL(p.PlayerFName,'') , ' ',IFNULL(p.PlayerLName,'')) AS batsman_full_name, "				
+				+ "CONCAT(IFNULL(a.PlayerFName,'') , ' ',IFNULL(a.PlayerLName,'')) AS assist_full_name, "
+				+ "CONCAT(IFNULL(b.PlayerFName,'') , ' ',IFNULL(b.PlayerLName,'')) AS bowler_full_name, "
+				+ "CONCAT(h.HowOutAbbrev,' ',IFNULL(a.PlayerFName,''), ' ', IFNULL(CONCAT(a.PlayerLName,' b '),''), IFNULL(b.PlayerFName,'') , ' ', IFNULL(b.PlayerLName,'')) AS out_info "
+				+ "FROM scorecard_batting_details s "
+				+ "LEFT JOIN players a ON a.PlayerID = s.assist "
+				+ "LEFT JOIN players p ON p.PlayerID = s.player_id "
+				+ "LEFT JOIN players b ON b.PlayerID = s.bowler "
+				+ "INNER JOIN howout h ON h.HowOutID = s.how_out "
+				+ "WHERE s.game_id = ? "
+				+ "AND s.innings_id = ? "
+				+ "AND s.how_out <> 1 "
+				+ "ORDER BY s.batting_position;";
+            //@formatter:on
+
+		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql, new Object[] { gameId, innings });
+		return scoreCard;
+
+	}
+
+	@Override
+	public List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings) {
+	//@formatter:off
+	String sql = "SELECT DISTINCT "
+			+ "bf.TeamAbbrev AS bat_first_team, bs.TeamAbbrev AS bat_second_team, sc.result as match_result, tea.teamAbbrev AS won_toss_team, g.GroundName as ground_name, "
+			+ "t.teamAbbrev as batting_team, te.teamAbbrev as bowling_team, s.game_id, s.innings_id, sc.maxovers as maximun_overs, ex.total as extras_total, "
+			+ " sco.total as total_score, "
+			+ "'Total' as total_title, "
+			+ "CONCAT(sco.wickets,' Wickets, ',sco.overs,', Overs') AS totals_info, "
+			+ " ex.total as extras_total, "
+			+ "'Extras' as extras_title, "
+			+ "CONCAT('b ',ex.byes,', lb ',ex.legbyes,', W ',ex.wides,', nb ',ex.noballs) AS extras_info"
+			+ " FROM scorecard_batting_details s "
+			+ "INNER JOIN teams t on s.team = t.teamid "
+			+ "INNER JOIN scorecard_game_details sc on sc.game_id = s.game_id "
+			+ "INNER JOIN teams tea on sc.toss_won_id = tea.teamid "
+			+ "INNER JOIN teams te on s.opponent = te.teamid "
+			+ "INNER JOIN teams bf ON sc.batting_first_id = bf.TeamID "
+			+ "INNER JOIN teams bs ON sc.batting_second_id = bs.TeamID "
+			+ "INNER JOIN grounds g ON sc.ground_id = g.GroundID "
+			+ "INNER JOIN scorecard_extras_details ex on ex.game_id = sc.game_id "
+			+ "INNER JOIN scorecard_total_details sco on sc.game_id = sco.game_id "
+			+ "LEFT JOIN players pl ON sc.mom = pl.PlayerID "
+			+ "LEFT JOIN players a ON a.PlayerID = s.assist "
+			+ "LEFT JOIN players p ON p.PlayerID = s.player_id "
+			+ "LEFT JOIN players b ON b.PlayerID = s.bowler "
+			+ "INNER JOIN howout h ON h.HowOutID = s.how_out "
+			+ "WHERE "
+			+ "s.game_id = ? "
+			+ "AND s.innings_id = ? "
+			+ "AND ex.innings_id = ? "
+			+ "AND sco.innings_id = ? "
+			+ "AND s.how_out <> 1 "
+			+ "ORDER BY s.batting_position ;";
+    //@formatter:on
+		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql,
+				new Object[] { gameId, innings, innings, innings });
+		return scoreCard;
+	}
 }

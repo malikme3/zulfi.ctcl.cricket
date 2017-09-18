@@ -1,5 +1,8 @@
 package com.cricket.austin.zulfi.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
@@ -28,5 +31,9 @@ public interface MatchScoringDao {
 	int updateInsertScorecardBattingDetails(ScorecardBatting details);
 
 	int inertUupdateScorecardBowlingDetails(ScorecardBowling details);
+
+	List<Map<String, Object>> getBattingScorecardByInnings(int gameId, int innings);
+
+	List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings);
 
 }
