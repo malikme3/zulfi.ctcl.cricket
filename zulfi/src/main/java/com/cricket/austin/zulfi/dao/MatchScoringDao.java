@@ -36,4 +36,8 @@ public interface MatchScoringDao {
 
 	List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings);
 
+	List<Map<String, Object>> getBowlingScorecardByInnings(int gameId, int innings);
+
+	List<Map<String, Object>> getDNBScorecardByInnings(int gameId, int innings);
+
 }

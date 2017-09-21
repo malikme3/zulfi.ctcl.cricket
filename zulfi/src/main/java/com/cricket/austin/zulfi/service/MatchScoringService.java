@@ -32,4 +32,8 @@ public interface MatchScoringService {
 	public List<Map<String, Object>> getBattingScorecardByInnings(int gameId, int innings);
 
 	public List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings);
+
+	public List<Map<String, Object>> getBowlingScorecardByInnings(int gameId, int innings);
+
+	public List<Map<String, Object>> getDNBScorecardByInnings(int gameId, int innings);
 }

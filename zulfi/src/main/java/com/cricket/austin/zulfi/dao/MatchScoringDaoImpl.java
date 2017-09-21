@@ -435,6 +435,25 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 	}
 
 	@Override
+	public List<Map<String, Object>> getBowlingScorecardByInnings(int gameId, int innings) {
+
+		// @formatter:off
+		String sql = "SELECT s.game_id, s.innings_id, s.bowling_position, s.overs, s.maidens, s.runs, s.wickets, s.noballs, s.wides, "
+				+ "round((s.runs/s.overs),2) as bowler_economy, p.PlayerID AS bowler_id, "
+				+ "CONCAT(IFNULL(p.PlayerFName,'') ,' ',IFNULL(p.PlayerLName,'')) as bowler_full_name "
+				+ "FROM scorecard_bowling_details s "
+				+ "LEFT JOIN players p ON p.PlayerID = s.player_id "
+				+ "WHERE s.game_id = ? "
+				+ "AND s.innings_id = ? "
+				+ "ORDER BY s.bowling_position";
+            //@formatter:on
+
+		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql, new Object[] { gameId, innings });
+		return scoreCard;
+
+	}
+
+	@Override
 	public List<Map<String, Object>> getScorecardInfoByInnings(int gameId, int innings) {
 	//@formatter:off
 	String sql = "SELECT DISTINCT "
@@ -467,10 +486,31 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 			+ "AND ex.innings_id = ? "
 			+ "AND sco.innings_id = ? "
 			+ "AND s.how_out <> 1 "
-			+ "ORDER BY s.batting_position ;";
+			+ "ORDER BY s.batting_position";
     //@formatter:on
 		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql,
 				new Object[] { gameId, innings, innings, innings });
 		return scoreCard;
+	}
+
+	@Override
+	public List<Map<String, Object>> getDNBScorecardByInnings(int gameId, int innings) {
+
+		// @formatter:off
+		String sql = " SELECT s.game_id, s.innings_id, "
+				+ "'Did not bat:' as dnb_title, "
+				+ "GROUP_CONCAT(IFNULL( LEFT(p.PlayerFName,1),'') ,' ',IFNULL(p.PlayerLName,'') ORDER BY s.batting_position ASC SEPARATOR ', ') as did_not_bat, "
+				+ "h.HowOutID as how_out_id, h.HowOutName as how_out_name "
+				+ "FROM scorecard_batting_details s "
+				+ "LEFT JOIN players p ON p.PlayerID = s.player_id "
+				+ "INNER JOIN howout h ON h.HowOutID = s.how_out "
+				+ "WHERE s.game_id = ? "
+				+ "AND s.innings_id = ? "
+				+ "AND s.how_out = 1;";
+            //@formatter:on
+
+		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql, new Object[] { gameId, innings });
+		return scoreCard;
+
 	}
 }

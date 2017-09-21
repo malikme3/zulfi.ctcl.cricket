@@ -227,9 +227,20 @@ public class AppController {
 		return new ResponseEntity<List<Map<String, Object>>>(detailedScore, HttpStatus.OK);
 	}
 
-	// getBattingScorecardByInnings(int gameId, int innings)
-	// Match Detailed score information
-	@RequestMapping(value = { "/scorecard/Batting/byInning" }, method = RequestMethod.GET)
+	//@formatter:off
+				/************************ Start **********************************/
+				/************* Match Detailed score information **********************/
+				/************************ Start **********************************/
+	//@formatter:on
+
+	@RequestMapping(value = { "/scorecard/scorcardInfoByInnings" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> scorecardInfoByInnings(@RequestParam int gameId, int inning) {
+		logger.info("In AppController.getScorecardInfoByInnings(" + gameId + ")");
+		List<Map<String, Object>> scoreCard = matchScoringService.getScorecardInfoByInnings(gameId, inning);
+		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = { "/scorecard/battingByInnings" }, method = RequestMethod.GET)
 	public ResponseEntity<List<Map<String, Object>>> detailedScoreCardByBatInnings(@RequestParam int gameId,
 			int inning) {
 		logger.info("In AppController.getBattingScorecardByInnings(" + gameId + ")");
@@ -237,12 +248,26 @@ public class AppController {
 		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = { "/scorecard/scorcardInfo/byInning" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> scorecardInfoByInnings(@RequestParam int gameId, int inning) {
-		logger.info("In AppController.getScorecardInfoByInnings(" + gameId + ")");
-		List<Map<String, Object>> scoreCard = matchScoringService.getScorecardInfoByInnings(gameId, inning);
+	@RequestMapping(value = { "/scorecard/bowlingByInnings" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> bowlingScoreCardByBatInnings(@RequestParam int gameId,
+			int inning) {
+		logger.info("In AppController.getBattingScorecardByInnings(" + gameId + ")");
+		List<Map<String, Object>> scoreCard = matchScoringService.getBowlingScorecardByInnings(gameId, inning);
 		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
 	}
+
+	@RequestMapping(value = { "/scorecard/dnbByInnings" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> didNotBatScorecardByInnings(@RequestParam int gameId, int inning) {
+		logger.info("In AppController.getBattingScorecardByInnings(" + gameId + ")");
+		List<Map<String, Object>> scoreCard = matchScoringService.getDNBScorecardByInnings(gameId, inning);
+		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
+	}
+
+	//@formatter:off
+			/************************ END **********************************/
+			/************* Match Detailed score information **********************/
+			/************************ END **********************************/
+	//@formatter:on
 
 	// Match Detailed bowling information
 	@RequestMapping(value = { "/detailed/scorecard/bowling/" }, method = RequestMethod.GET)

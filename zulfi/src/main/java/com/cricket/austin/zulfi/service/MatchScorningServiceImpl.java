@@ -80,4 +80,14 @@ public class MatchScorningServiceImpl implements MatchScoringService {
 		return matchScoringDao.getScorecardInfoByInnings(gameId, innings);
 	}
 
+	@Override
+	public List<Map<String, Object>> getBowlingScorecardByInnings(int gameId, int innings) {
+		return matchScoringDao.getBowlingScorecardByInnings(gameId, innings);
+	}
+
+	@Override
+	public List<Map<String, Object>> getDNBScorecardByInnings(int gameId, int innings) {
+		return matchScoringDao.getDNBScorecardByInnings(gameId, innings);
+	}
+
 }
