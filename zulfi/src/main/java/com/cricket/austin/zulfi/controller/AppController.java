@@ -39,6 +39,7 @@ import com.cricket.austin.zulfi.service.UserService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping("/api")
 public class AppController {
 
 	@Autowired
