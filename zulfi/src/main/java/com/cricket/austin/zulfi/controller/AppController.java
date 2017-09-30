@@ -65,8 +65,8 @@ public class AppController {
 		// List<Player> users = userService.getAllPlayers();
 		/*
 		 * if(users.isEmpty()){ return new
-		 * ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);//You many decide
-		 * to return HttpStatus.NOT_FOUND }
+		 * ResponseEntity<List<User>>(HttpStatus.NO_CONTENT);//You many decide to return
+		 * HttpStatus.NOT_FOUND }
 		 */
 		return new ResponseEntity<List<Player>>(HttpStatus.OK);
 	}
@@ -166,7 +166,7 @@ public class AppController {
 	}
 	/*
 	 * -------------------Submitting availability for team
-	 * Selection--------------------------------------------------------
+	 * Selection-----------------------------------
 	 */
 
 	@RequestMapping(value = "/submit/availability", method = RequestMethod.POST)
@@ -228,11 +228,11 @@ public class AppController {
 		return new ResponseEntity<List<Map<String, Object>>>(detailedScore, HttpStatus.OK);
 	}
 
-	//@formatter:off
-				/************************ Start **********************************/
-				/************* Match Detailed score information **********************/
-				/************************ Start **********************************/
-	//@formatter:on
+	// @formatter:off
+	/************************ Start **********************************/
+	/************* Match Detailed score information **********************/
+	/************************ Start **********************************/
+	// @formatter:on
 
 	@RequestMapping(value = { "/scorecard/scorcardInfoByInnings" }, method = RequestMethod.GET)
 	public ResponseEntity<List<Map<String, Object>>> scorecardInfoByInnings(@RequestParam int gameId, int inning) {
@@ -264,11 +264,11 @@ public class AppController {
 		return new ResponseEntity<List<Map<String, Object>>>(scoreCard, HttpStatus.OK);
 	}
 
-	//@formatter:off
-			/************************ END **********************************/
-			/************* Match Detailed score information **********************/
-			/************************ END **********************************/
-	//@formatter:on
+	// @formatter:off
+	/************************ END **********************************/
+	/************* Match Detailed score information **********************/
+	/************************ END **********************************/
+	// @formatter:on
 
 	// Match Detailed bowling information
 	@RequestMapping(value = { "/detailed/scorecard/bowling/" }, method = RequestMethod.GET)
@@ -363,7 +363,8 @@ public class AppController {
 	}
 
 	@RequestMapping(value = { "/submit/score/scorecardGameDetails" }, method = RequestMethod.POST)
-	public ResponseEntity updateScorecardGameDetails(@RequestBody ScorecardGameDetails gameDetails) throws Exception {
+	public ResponseEntity<Void> updateScorecardGameDetails(@RequestBody ScorecardGameDetails gameDetails)
+			throws Exception {
 		logger.info("In AppController.updateScorecardGameDetails" + gameDetails);
 		int rows = matchScoringService.updateScorecardGameDetails(gameDetails);
 		logger.info("rows#  " + rows);
@@ -407,7 +408,7 @@ public class AppController {
 
 		matchScoringService.submitResults(home_team);
 		matchScoringService.submitResults(away_team);
-		return new ResponseEntity(new ScorecardGameDetails(), HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardExtrasDetails" }, method = RequestMethod.POST)
@@ -440,7 +441,7 @@ public class AppController {
 
 		logger.info("In AppController.ScorecardBattingDetails" + details);
 		int rows = matchScoringService.updateScorecardBattingDetails(details);
-		return new ResponseEntity<Integer>(0, HttpStatus.OK);
+		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = { "/updateScorecardBowlingDetails" }, method = RequestMethod.PUT)

@@ -147,7 +147,7 @@ public class TeamDaoImpl implements TeamDao {
 	@Override
 	public List<Map<String, Object>> getTeamsName() {
 
-		String sql = "select teamabbrev as label, teamid as value from Teams where TeamActive = '1'";
+		String sql = "select teamabbrev as label, teamid as value from teams where TeamActive = '1'";
 
 		List<Map<String, Object>> detailed_score = jdbcTemplate.queryForList(sql);
 		return detailed_score;
@@ -193,7 +193,7 @@ public class TeamDaoImpl implements TeamDao {
 		List<Seasons> groups = new ArrayList<Seasons>();
 		String sql = "SELECT DISTINCT co.conferenceAbbrev, s.seasonName " + "from  conferencemanagement co "
 				+ "INNER JOIN ladder la ON la.conference = co.ConferenceID "
-				+ "INNER JOIN SEASONS s on s.seasonId = la.season where  s.seasonYear = ? ";
+				+ "INNER JOIN seasons s on s.seasonId = la.season where  s.seasonYear = ? ";
 
 		List<Map<String, Object>> sGroups = jdbcTemplate.queryForList(sql, new Object[] { year });
 
@@ -298,7 +298,7 @@ public class TeamDaoImpl implements TeamDao {
 	public List<Map<String, Object>> findPlayer() {
 
 		String sql = "SELECT CONCAT(p.PlayerFName, ' ', p.PlayerLName) as label, p.playerId as value  "
-				+ "FROM PLAYERS p INNER JOIN TEAMS t ON t.TeamID = p.PlayerTeam "
+				+ "FROM players p INNER JOIN teams t ON t.TeamID = p.PlayerTeam "
 				+ "WHERE p.isactive = 0  ORDER BY p.PlayerFName,p.PlayerLName;";
 
 		List<Map<String, Object>> playersList = jdbcTemplate.queryForList(sql);

@@ -134,7 +134,7 @@ public class UserDaoImpl  implements UserDao {
 
 	@Override
 	public List<Seasons> getSeasonsList(String seasonYear) {
-		String hql = "from Seasons where seasonYear = :sYear ";
+		String hql = "from seasons where seasonYear = :sYear ";
 		Query query = session().createQuery(hql);
 		query.setParameter("sYear", seasonYear);
 		List<Seasons> seasonsList = query.list();
@@ -143,7 +143,7 @@ public class UserDaoImpl  implements UserDao {
 
 	@Override
 	public List<Seasons> getSeason(String seasonYear, String seasonName) {
-		String hql = "from Seasons where seasonYear = :sYear ";
+		String hql = "from seasons where seasonYear = :sYear ";
 		Query query = session().createQuery(hql);
 		query.setParameter("sYear", seasonYear);
 		List<Seasons> seasonsList = query.list();
@@ -152,7 +152,7 @@ public class UserDaoImpl  implements UserDao {
 
 	@Override
 	public List<Teams> getTeamsList() {
-		String hql = "from Teams where TeamActive = :teamActive ";
+		String hql = "from teams where TeamActive = :teamActive ";
 		Query query = session().createQuery(hql);
 		query.setParameter("teamActive", "1");
 		List<Teams> seasonsList = query.list();
@@ -161,7 +161,7 @@ public class UserDaoImpl  implements UserDao {
 
 	@Override
 	public List<Teams> getScheduleList() {
-		String hql = "from Teams where TeamActive = :teamActive ";
+		String hql = "from teams where TeamActive = :teamActive ";
 		Query query = session().createQuery(hql);
 		query.setParameter("teamActive", "1");
 		List<Teams> seasonsList = query.list();
@@ -179,7 +179,7 @@ public class UserDaoImpl  implements UserDao {
 
 	@Override
 	public List<Teams> getTeamByTeamAbbrev(String teamAbbrev) {
-		String Ladder = "from Teams where TeamAbbrev = :teamAbbrev ";
+		String Ladder = "from teams where TeamAbbrev = :teamAbbrev ";
 		Query query = session().createQuery(Ladder);
 		query.setParameter("teamAbbrev", teamAbbrev);
 		List<Teams> list = query.list();
