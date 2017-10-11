@@ -18,11 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.cricket.austin.zulfi.model.ClubsPage;
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Leagues;
 import com.cricket.austin.zulfi.model.Player;
 import com.cricket.austin.zulfi.model.PlayerCtcl;
 import com.cricket.austin.zulfi.model.RecordsInputs;
+import com.cricket.austin.zulfi.model.Roles;
 import com.cricket.austin.zulfi.model.ScorecardBatting;
 import com.cricket.austin.zulfi.model.ScorecardBowling;
 import com.cricket.austin.zulfi.model.ScorecardFowDetails;
@@ -33,6 +35,7 @@ import com.cricket.austin.zulfi.model.SorecardExtrasDetails;
 import com.cricket.austin.zulfi.model.SubmitResults;
 import com.cricket.austin.zulfi.model.Teams;
 import com.cricket.austin.zulfi.service.BattingRecordsService;
+import com.cricket.austin.zulfi.service.ClubsService;
 import com.cricket.austin.zulfi.service.MatchScoringService;
 import com.cricket.austin.zulfi.service.TeamService;
 import com.cricket.austin.zulfi.service.UserService;
@@ -48,6 +51,8 @@ public class AppController {
 	UserService userService;
 	@Autowired
 	MatchScoringService matchScoringService;
+	@Autowired
+	ClubsService clubsService;
 
 	@Autowired
 	BattingRecordsService battingRecordsService;
@@ -450,5 +455,29 @@ public class AppController {
 		logger.info("In AppController.ScorecardBowlingDetails => " + details);
 		int rows = matchScoringService.inertUupdateScorecardBowlingDetails(details);
 		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = { "/clubs/list" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> clubsList()
+			throws Exception {
+		logger.info("In AppController.clubsList() => ");
+		List<Map<String, Object>> clubs = clubsService.clubsList();
+		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = { "/clubs/details" }, method = RequestMethod.GET)
+	public ResponseEntity<List<ClubsPage>> clubsDetails()
+			throws Exception {
+		logger.info("In AppController.clubsDetails() => ");
+		List<ClubsPage> clubs = clubsService.clubsDetails();
+		return new ResponseEntity<List<ClubsPage>>(clubs, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = { "/players/roles" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Roles>> playersRoles()
+			throws Exception {
+		logger.info("In AppController.playersRoles() => ");
+		List<Roles> players = clubsService.playersRole();
+		return new ResponseEntity<List<Roles>>(players, HttpStatus.OK);
 	}
 }
