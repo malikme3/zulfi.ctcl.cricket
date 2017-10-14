@@ -90,4 +90,9 @@ public class MatchScorningServiceImpl implements MatchScoringService {
 		return matchScoringDao.getDNBScorecardByInnings(gameId, innings);
 	}
 
+	@Override
+	public List<Map<String, Object>> getLatesMatchesSummary() {
+		return matchScoringDao.getLatesMatchesSummary();
+	}
+
 }

@@ -461,10 +461,10 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 			+ "t.teamAbbrev as batting_team, te.teamAbbrev as bowling_team, s.game_id, s.innings_id, sc.maxovers as maximun_overs, ex.total as extras_total, "
 			+ " sco.total as total_score, "
 			+ "'Total' as total_title, "
-			+ "CONCAT(sco.wickets,' Wickets, ',sco.overs,', Overs') AS totals_info, "
+			+ "CONCAT(CAST(sco.wickets AS CHAR(10)),' Wickets, ',CAST(sco.overs AS CHAR(10)),' Overs') AS totals_info, "
 			+ " ex.total as extras_total, "
 			+ "'Extras' as extras_title, "
-			+ "CONCAT('b ',ex.byes,', lb ',ex.legbyes,', W ',ex.wides,', nb ',ex.noballs) AS extras_info"
+			+ "CONCAT('bye:',CAST(ex.byes AS CHAR(10)),', lb:',CAST(ex.legbyes AS CHAR(10)),', w:',CAST(ex.wides AS CHAR(10)),', nb:',CAST(ex.noballs AS CHAR(10))) AS extras_info"
 			+ " FROM scorecard_batting_details s "
 			+ "INNER JOIN teams t on s.team = t.teamid "
 			+ "INNER JOIN scorecard_game_details sc on sc.game_id = s.game_id "
@@ -510,6 +510,31 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
             //@formatter:on
 
 		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql, new Object[] { gameId, innings });
+		return scoreCard;
+
+	}
+
+	@Override
+	public List<Map<String, Object>> getLatesMatchesSummary() {
+
+		// @formatter:off
+		String sql = "SELECT tot.game_id, tot.team,t.`TeamAbbrev` as team_abbrev, s.hometeam as home_team, "
+				+ "s.awayteam as away_team,tot.innings_id, tot.wickets as wickets, tot.total as total, "
+				+ "tot.overs as overs, CONCAT(CAST(tot.total AS CHAR(10)),'/',CAST(tot.wickets AS CHAR(10)),' "
+				+ "(',CAST(tot.overs AS CHAR(10)),'ov)') as final_score, s.result as result "
+				+ "FROM scorecard_total_details tot "
+				+ "INNER JOIN scorecard_game_details s ON s.game_id = tot.game_id "
+				+ "INNER JOIN teams t on t.`TeamID` = tot.team "
+				+ "WHERE s.isactive=0 "
+				+ "AND s.game_date <= NOW() "
+				+ "AND s.game_date >= DATE_SUB(NOW(), INTERVAL 8 DAY) "
+				+ "ORDER BY s.week DESC, "
+				+ "s.game_date DESC, "
+				+ "s.game_id DESC, "
+				+ "tot.innings_id ASC;";
+            //@formatter:on
+
+		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql);
 		return scoreCard;
 
 	}

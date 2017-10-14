@@ -40,4 +40,6 @@ public interface MatchScoringDao {
 
 	List<Map<String, Object>> getDNBScorecardByInnings(int gameId, int innings);
 
+	List<Map<String, Object>> getLatesMatchesSummary();
+
 }

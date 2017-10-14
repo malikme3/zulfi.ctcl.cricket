@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -40,35 +41,10 @@ public class TeamDaoImpl implements TeamDao {
 				+ "INNER JOIN conferencemanagement co ON la.conference = co.ConferenceID "
 				+ "INNER JOIN teams t on la.team = t.teamId "
 				+ "WHERE la.season in (select SeasonId from seasons s where s.seasonName = ? ) "
-				+ "and  co.conferenceAbbrev = ? ORDER BY la.team";
+				+ "and  co.conferenceAbbrev = ? ORDER BY la.totalpoints DESC";
 
-		List<Ladder> teamsPoints = new ArrayList<Ladder>();
-
-		List<Map<String, Object>> teamStanding = jdbcTemplate.queryForList(sql,
-				new Object[] { seasonName, conferenceAbbrev });
-
-		for (Map row : teamStanding) {
-			Ladder teamPoints = new Ladder();
-
-			teamPoints.setTeam((int) row.get("team"));
-			teamPoints.setTeamAbbrev((String) row.get("teamAbbrev"));
-			teamPoints.setPlayed((int) row.get("played"));
-			teamPoints.setWon((int) row.get("won"));
-			teamPoints.setLost((int) row.get("lost"));
-			teamPoints.setTied((int) row.get("tied"));
-			teamPoints.setPenalty((int) row.get("penalty"));
-			teamPoints.setTotalpoints((int) row.get("totalpoints"));
-			teamPoints.setConferenceAbbrev((String) row.get("conferenceAbbrev"));
-			// TODO nrr for zero value check
-			/*
-			 * if (row.get("nrr"). { teamPoints.setNrr((double) row.get("nrr"));
-			 * } else { teamPoints.setNrr(0); };
-			 */
-
-			teamsPoints.add(teamPoints);
-
-		}
-		;
+		List<Ladder> teamsPoints = jdbcTemplate.query(sql, new String[] { seasonName, conferenceAbbrev },
+				new BeanPropertyRowMapper<Ladder>(Ladder.class));
 
 		return teamsPoints;
 	}

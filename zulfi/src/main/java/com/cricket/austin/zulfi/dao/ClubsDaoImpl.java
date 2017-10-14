@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.cricket.austin.zulfi.model.ClubsPage;
+import com.cricket.austin.zulfi.model.News;
 import com.cricket.austin.zulfi.model.Roles;
 
 @Repository
@@ -105,6 +106,25 @@ public class ClubsDaoImpl implements ClubsDao {
 		// @formatter:on
 		List<Roles> roles = jdbcTemplate.query(sql, new BeanPropertyRowMapper<Roles>(Roles.class));
 		return roles;
+
+	}
+
+	@Override
+	public List<News> getNews() {
+
+		// @formatter:off
+		String sql = "SELECT *, "
+				+ "CONCAT('Author: ',author, '     Date Added: ', added) AS writer_info ,"
+				+ "DATE_FORMAT(added, \"%Y\") as news_year "
+				+ "FROM news "
+				+ "WHERE IsPending = 0 "
+				+ "AND added > '2007-01-01' "
+				+ "ORDER BY added DESC, id DESC "
+				+ "LIMIT 100";
+            //@formatter:on
+
+		List<News> scoreCard = jdbcTemplate.query(sql, new BeanPropertyRowMapper<News>(News.class));
+		return scoreCard;
 
 	}
 

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.cricket.austin.zulfi.dao.ClubsDao;
 import com.cricket.austin.zulfi.model.ClubsPage;
+import com.cricket.austin.zulfi.model.News;
 import com.cricket.austin.zulfi.model.Roles;
 
 @Service
@@ -32,6 +33,11 @@ public class ClubsServiceImpl implements ClubsService {
 	public List<Roles> playersRole() {
 
 		return clubsDao.playersRole();
+	}
+
+	@Override
+	public List<News> getNews() {
+		return clubsDao.getNews();
 	}
 
 }

@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.cricket.austin.zulfi.model.ClubsPage;
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Leagues;
+import com.cricket.austin.zulfi.model.News;
 import com.cricket.austin.zulfi.model.Player;
 import com.cricket.austin.zulfi.model.PlayerCtcl;
 import com.cricket.austin.zulfi.model.RecordsInputs;
@@ -456,28 +457,39 @@ public class AppController {
 		int rows = matchScoringService.inertUupdateScorecardBowlingDetails(details);
 		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = { "/clubs/list" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> clubsList()
-			throws Exception {
+	public ResponseEntity<List<Map<String, Object>>> clubsList() throws Exception {
 		logger.info("In AppController.clubsList() => ");
 		List<Map<String, Object>> clubs = clubsService.clubsList();
 		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = { "/clubs/details" }, method = RequestMethod.GET)
-	public ResponseEntity<List<ClubsPage>> clubsDetails()
-			throws Exception {
+	public ResponseEntity<List<ClubsPage>> clubsDetails() throws Exception {
 		logger.info("In AppController.clubsDetails() => ");
 		List<ClubsPage> clubs = clubsService.clubsDetails();
 		return new ResponseEntity<List<ClubsPage>>(clubs, HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = { "/players/roles" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Roles>> playersRoles()
-			throws Exception {
+	public ResponseEntity<List<Roles>> playersRoles() throws Exception {
 		logger.info("In AppController.playersRoles() => ");
 		List<Roles> players = clubsService.playersRole();
 		return new ResponseEntity<List<Roles>>(players, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = { "/ctcl/news" }, method = RequestMethod.GET)
+	public ResponseEntity<List<News>> ctclNews() throws Exception {
+		logger.info("In AppController.ctclNews() => ");
+		List<News> news = clubsService.getNews();
+		return new ResponseEntity<List<News>>(news, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = { "/matches/latest" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> latesMatchesSummary() throws Exception {
+		logger.info("In AppController.clubsList() => ");
+		List<Map<String, Object>> clubs = matchScoringService.getLatesMatchesSummary();
+		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
 	}
 }
