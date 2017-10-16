@@ -93,6 +93,19 @@ public class AppController {
 		return new ResponseEntity<List<Map<String, Object>>>(recordsLis, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "/records/bowlings/", method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> getBowlingsRecords(@RequestParam String team, String player,
+			String club, String season, String year) {
+		RecordsInputs input = new RecordsInputs();
+		input.setTeamId(team);
+		input.setPlayerId(player);
+		input.setClubId(club);
+		input.setSeasonId(season);
+		input.setSeasonYear(year);
+		List<Map<String, Object>> recordsLis = battingRecordsService.bowlingRecords(input);
+		return new ResponseEntity<List<Map<String, Object>>>(recordsLis, HttpStatus.OK);
+	}
+
 	// Getting Players for Match Selection
 	@RequestMapping(value = "/players/selection", method = RequestMethod.GET)
 	public ResponseEntity<List<PlayerCtcl>> getTeamPlayers() {

@@ -22,4 +22,10 @@ public class BattingRecordsServiceImpl implements BattingRecordsService {
 
 	}
 
+	@Override
+	public List<Map<String, Object>> bowlingRecords(RecordsInputs recordsInputs) {
+		return battingRecordsDao.bowlingRecords(recordsInputs);
+
+	}
+
 }

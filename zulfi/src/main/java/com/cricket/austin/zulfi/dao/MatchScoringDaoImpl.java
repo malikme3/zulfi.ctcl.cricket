@@ -521,17 +521,18 @@ public class MatchScoringDaoImpl implements MatchScoringDao {
 		String sql = "SELECT tot.game_id, tot.team,t.`TeamAbbrev` as team_abbrev, s.hometeam as home_team, "
 				+ "s.awayteam as away_team,tot.innings_id, tot.wickets as wickets, tot.total as total, "
 				+ "tot.overs as overs, CONCAT(CAST(tot.total AS CHAR(10)),'/',CAST(tot.wickets AS CHAR(10)),' "
-				+ "(',CAST(tot.overs AS CHAR(10)),'ov)') as final_score, s.result as result "
+				+ "(',CAST(tot.overs AS CHAR(10)),' Over)') as final_score, s.result as result "
 				+ "FROM scorecard_total_details tot "
 				+ "INNER JOIN scorecard_game_details s ON s.game_id = tot.game_id "
 				+ "INNER JOIN teams t on t.`TeamID` = tot.team "
 				+ "WHERE s.isactive=0 "
 				+ "AND s.game_date <= NOW() "
-				+ "AND s.game_date >= DATE_SUB(NOW(), INTERVAL 8 DAY) "
+				+ "AND s.game_date >= DATE_SUB(NOW(), INTERVAL 90 DAY) "
 				+ "ORDER BY s.week DESC, "
 				+ "s.game_date DESC, "
 				+ "s.game_id DESC, "
-				+ "tot.innings_id ASC;";
+				+ "tot.innings_id ASC "
+				+ "LIMIT 12";
             //@formatter:on
 
 		List<Map<String, Object>> scoreCard = jdbcTemplate.queryForList(sql);
