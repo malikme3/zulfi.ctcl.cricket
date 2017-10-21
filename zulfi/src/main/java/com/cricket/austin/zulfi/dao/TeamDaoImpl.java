@@ -193,15 +193,26 @@ public class TeamDaoImpl implements TeamDao {
 
 		/** Schedule for last 6 month and future **/
 		int days = 180;
-		String sql = "SELECT @row := @row + 1 as row_number, s.seasonName, concat(th.teamAbbrev, ' VS ', t.teamabbrev) as teams , "
-				+ "t.teamId as away_team_id, th.teamId as home_team_id, t.teamAbbrev as away_team_name, th.teamAbbrev as home_team_name, "
-				+ "concat(p.playerFname, ' ', p.playerLName) as umpireName,sch.date,DATE_FORMAT(sch.date, '%b %e') as "
-				+ "formatted_date,s.seasonId, sch.week, grn.GroundName as ground , grn.GroundAbbrev as groundName "
-				+ "FROM schedule sch " + "INNER JOIN players p on sch.umpire1 =  p.playerID "
-				+ "INNER JOIN teams t on sch.awayteam = t.teamId " + "INNER JOIN teams th on sch.hometeam = th.teamId "
-				+ "INNER JOIN seasons s on sch.season = s.seasonId , grounds grn " + "JOIN (SELECT @row :=0) r "
-				+ "WHERE  sch.venue = grn.GroundID AND  sch.date >= NOW() - INTERVAL ? DAY and s.seasonId = IFNULL(?, s.seasonId ) ORDER BY sch.date DESC, sch.id ";
-
+		// @formatter:off
+		String sql = "SELECT @row := @row + 1 as row_number, s.seasonName, "
+				+ "concat(th.teamAbbrev, ' VS ', t.teamabbrev) as teams , "
+				+ "t.teamId as away_team_id, th.teamId as home_team_id, "
+				+ "t.teamAbbrev as away_team_name, th.teamAbbrev as home_team_name, "
+				+ "concat(p.playerFname, ' ', p.playerLName) as umpireName,sch.date,"
+				+ "DATE_FORMAT(sch.date, '%b %e') as formatted_date, "
+				+ "s.seasonId, sch.week, grn.GroundName as ground , grn.GroundAbbrev as groundName "
+				+ "FROM schedule sch "
+				+ "INNER JOIN players p on sch.umpire1 =  p.playerID "
+				+ "INNER JOIN teams t on sch.awayteam = t.teamId "
+				+ "INNER JOIN teams th on sch.hometeam = th.teamId "
+				+ "INNER JOIN seasons s on sch.season = s.seasonId , grounds grn "
+				+ "JOIN (SELECT @row :=0) r "
+				+ "WHERE  "
+				+ "sch.venue = grn.GroundID "
+				+ "AND  sch.date >= NOW() - INTERVAL ? DAY "
+				+ "AND s.seasonId = IFNULL(?, s.seasonId ) "
+				+ "ORDER BY sch.date DESC, sch.id ";
+		// @formatter:on
 		List<Map<String, Object>> listSchedule = jdbcTemplate.queryForList(sql, new Object[] { days, seasonId });
 		return listSchedule;
 
