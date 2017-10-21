@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.cricket.austin.zulfi.ZulfiApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.691 sec - in com.cricket.austin.zulfi.ZulfiApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 11.075 sec - in com.cricket.austin.zulfi.ZulfiApplicationTests
