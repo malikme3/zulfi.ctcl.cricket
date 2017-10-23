@@ -15,4 +15,6 @@ public interface ClubsService {
 	public List<Roles> playersRole();
 
 	public List<News> getNews();
+
+	public List<Map<String, Object>> clubsInfo();
 }

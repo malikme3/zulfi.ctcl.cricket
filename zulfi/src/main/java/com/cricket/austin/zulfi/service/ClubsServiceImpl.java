@@ -40,4 +40,9 @@ public class ClubsServiceImpl implements ClubsService {
 		return clubsDao.getNews();
 	}
 
+	@Override
+	public List<Map<String, Object>> clubsInfo() {
+		return clubsDao.clubsInfo();
+	}
+
 }

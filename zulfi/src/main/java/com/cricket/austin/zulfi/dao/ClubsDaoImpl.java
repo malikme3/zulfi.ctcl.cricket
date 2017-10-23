@@ -107,6 +107,24 @@ public class ClubsDaoImpl implements ClubsDao {
 		List<Roles> roles = jdbcTemplate.query(sql, new BeanPropertyRowMapper<Roles>(Roles.class));
 		return roles;
 
+	};
+
+	@Override
+	public List<Map<String, Object>> clubsInfo() {
+		// @formatter:off
+		String sql = "SELECT \r\n" + 
+				"cl.ClubID as club_id, cl.ClubName as club_name, cl.ClubURL as club_url,\r\n" + 
+				"cl.PresidentName as president_name, cl.VicePresidentName as vice_president_name,\r\n" + 
+				"cl.SecretaryName as secretary_name, cl.TreasurerName as treasurer_name,\r\n" + 
+				" cl.ClubColour as club_color, cl.GroundID as ground_id, gr.GroundName as ground_name\r\n" + 
+				" FROM clubs cl\r\n" + 
+				" LEFT JOIN grounds gr ON cl.GroundID = gr.GroundID \r\n" + 
+				" WHERE cl.ClubActive = 1\r\n" + 
+				" AND cl.LeagueId = 1";
+		// @formatter:on
+		List<Map<String, Object>> info = jdbcTemplate.queryForList(sql);
+		return info;
+
 	}
 
 	@Override

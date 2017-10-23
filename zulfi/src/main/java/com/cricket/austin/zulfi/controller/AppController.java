@@ -485,6 +485,13 @@ public class AppController {
 		return new ResponseEntity<List<ClubsPage>>(clubs, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = { "/clubs/info" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> clubsInfo() throws Exception {
+		logger.info("In AppController.clubsDetails() => ");
+		List<Map<String, Object>> clubs = clubsService.clubsInfo();
+		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
+	}
+
 	@RequestMapping(value = { "/players/roles" }, method = RequestMethod.GET)
 	public ResponseEntity<List<Roles>> playersRoles() throws Exception {
 		logger.info("In AppController.playersRoles() => ");

@@ -17,4 +17,6 @@ public interface ClubsDao {
 
 	public List<News> getNews();
 
+	public List<Map<String, Object>> clubsInfo();
+
 }
