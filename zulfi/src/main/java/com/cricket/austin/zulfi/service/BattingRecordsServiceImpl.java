@@ -18,6 +18,25 @@ public class BattingRecordsServiceImpl implements BattingRecordsService {
 
 	@Override
 	public List<Map<String, Object>> battingRecords(RecordsInputs recordsInputs) {
+		
+		// Setting explicit "null" value to use in sql query ifNull...
+		
+		if("null".equalsIgnoreCase(recordsInputs.getClubId()) || recordsInputs.getClubId().isEmpty()) {
+			recordsInputs.setClubId(null);
+		}
+		if("null".equalsIgnoreCase(recordsInputs.getPlayerId()) || recordsInputs.getPlayerId().isEmpty()) {
+			recordsInputs.setPlayerId(null);
+		}
+		if("null".equalsIgnoreCase(recordsInputs.getSeasonId()) || recordsInputs.getSeasonId().isEmpty()) {
+			recordsInputs.setSeasonId(null);;
+		}
+		if("null".equalsIgnoreCase(recordsInputs.getSeasonYear()) || recordsInputs.getSeasonYear().isEmpty()) {
+			recordsInputs.setSeasonYear(null);
+		}
+		if("null".equalsIgnoreCase(recordsInputs.getTeamId()) || recordsInputs.getTeamId().isEmpty()) {
+			recordsInputs.setTeamId(null);
+		}
+		
 		return battingRecordsDao.battingRecords(recordsInputs);
 
 	}
