@@ -523,7 +523,7 @@ public class AppController {
 	public ResponseEntity<Integer> submitLiveScore(@RequestBody ScoreForm scoreForm) throws Exception {
 
 		logger.info("In AppController.submitLiveScore" + scoreForm);
-		int rows = liveScoreService.submitWicket(scoreForm.getWicket());
+		int rows = liveScoreService.insertWicket(scoreForm.getWicket());
 		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
 	}
 
