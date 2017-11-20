@@ -27,9 +27,23 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 
 	@Override
 	public int syncScoreForm(ScoreForm scoreForm) {
-		syncMatchData(scoreForm.getMatch());
+		int rows = 0;
+		// Checking if liveGameId is provided or not
+		try {
+			if (isEmptyZeroNull(scoreForm.getLive_game_id())) {
+				return rows;
+			}
+		} catch (Exception ex) {
+			logger.warn("Error in syncScoreForm. LiveGame is not valid. " + ex);
+		}
 
-		return 0;
+		try {
+			rows = syncMatchData(scoreForm.getMatch());
+		} catch (Exception ex) {
+			logger.warn("Error in syncMatchData. " + ex);
+		}
+
+		return rows;
 	}
 
 	@Override
@@ -65,11 +79,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 
 		int rows = 0;
 
-		if (isEmptyNull(match.getLive_game_id())) {
-			logger.warn("No liveGameId in insertUpdateMatchData ");
-			return rows;
-		}
-
 		if (match.getId() < 1) {
 			logger.info("Data don't exist, Try to insert Match data");
 			try {
@@ -92,11 +101,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 
 		int rows = 0;
 
-		if (isEmptyNull(match.getLive_game_id())) {
-			logger.warn("No liveGameId is provided");
-			return rows;
-		}
-
 		try {
 			logger.info("Try to insert Match data");
 			rows = updateLiveScoreDaoImpl.updateMatchData(match);
@@ -114,11 +118,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	@Override
 	public int insertUpdateBatsmanData(ScoreForm scoreForm) {
 		int rows = 0;
-
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
-			logger.warn("No liveGameId is provided in insertUpdateBatsmanData ");
-			return rows;
-		}
 
 		try {
 			logger.info("Try to insert Batsman Data");
@@ -138,11 +137,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	@Override
 	public int updateInsertBatsmanData(ScoreForm scoreForm) {
 		int rows = 0;
-
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
-			logger.warn("No liveGameId is provided in updateInsertBatsmanData ");
-			return rows;
-		}
 
 		try {
 			// TODO: check for batsman 1&2
@@ -166,11 +160,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	public int insertUpdateBowlerData(ScoreForm scoreForm) {
 		int rows = 0;
 
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
-			logger.warn("No liveGameId is provided");
-			return rows;
-		}
-
 		try {
 			logger.info("Try to insert Bolwer data");
 			rows = insertLiveScoreDaoImpl.insertBowlerData(scoreForm.getBowler());
@@ -185,11 +174,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	@Override
 	public int updateInsertBowlerData(ScoreForm scoreForm) {
 		int rows = 0;
-
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
-			logger.warn("No liveGameId is provided in updateInsertBatsmanData ");
-			return rows;
-		}
 
 		try {
 			logger.info("updateInsertBatsmanData :update data");
@@ -209,11 +193,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	public int insertUpdateWicketData(ScoreForm scoreForm) {
 		int rows = 0;
 
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
-			logger.warn("No liveGameId is provided in insertUpdateWicketData() ");
-			return rows;
-		}
-
 		try {
 			logger.info("Try to insert Wicket Data");
 			rows = insertLiveScoreDaoImpl.insertWicketData((scoreForm.getWicket()));
@@ -228,11 +207,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	@Override
 	public int updateInsertWicketData(ScoreForm scoreForm) {
 		int rows = 0;
-
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
-			logger.warn("No liveGameId is provided in updateInsertBatsmanData ");
-			return rows;
-		}
 
 		try {
 
@@ -249,9 +223,8 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 
 	/**** Wicket Data Insert/Update End ****/
 
-	public boolean isEmptyNull(String s) {
-		if (".".equalsIgnoreCase(s) || s.length() < 0 || s == null) {
-			logger.warn("Error in provided of Id #" + s);
+	public boolean isEmptyZeroNull(String s) {
+		if (s == null || ".".equalsIgnoreCase(s) || s.length() < 0) {
 			return true;
 		} else
 			return false;
