@@ -1,5 +1,6 @@
 package com.cricket.austin.zulfi.live.service;
 
+import com.cricket.austin.zulfi.live.model.Match;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
@@ -8,9 +9,11 @@ public interface LiveScoreService {
 
 	public ScoreForm getScoreFrom(String machId);
 
-	public int updateInsertMatchData(ScoreForm scoreForm);
+	public int syncScoreForm(ScoreForm scoreForm);
 
-	public int insertUpdateMatchData(ScoreForm scoreForm);
+	public int updateInsertMatchData(Match match);
+
+	public int insertUpdateMatchData(Match match);
 
 	public int updateInsertBatsmanData(ScoreForm scoreForm);
 

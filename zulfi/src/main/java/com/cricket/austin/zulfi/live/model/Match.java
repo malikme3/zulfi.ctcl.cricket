@@ -1,9 +1,25 @@
 package com.cricket.austin.zulfi.live.model;
 
 public class Match {
-
-	int id, score, balls, overs, wickets, fours, sixes, wides, noballs, byes, legbyes;
+	boolean isActive;
 	String live_game_id;
+	int id, score, balls, overs, wickets, fours, sixes, wides, noballs, byes, legbyes;
+
+	public boolean isActive() {
+		return isActive;
+	}
+
+	public void setActive(boolean isActive) {
+		this.isActive = isActive;
+	}
+
+	public String getLive_game_id() {
+		return live_game_id;
+	}
+
+	public void setLive_game_id(String live_game_id) {
+		this.live_game_id = live_game_id;
+	}
 
 	public int getId() {
 		return id;
@@ -93,19 +109,11 @@ public class Match {
 		this.legbyes = legbyes;
 	}
 
-	public String getLive_game_id() {
-		return live_game_id;
-	}
-
-	public void setLive_game_id(String live_game_id) {
-		this.live_game_id = live_game_id;
-	}
-
 	@Override
 	public String toString() {
-		return "Match [id=" + id + ", score=" + score + ", balls=" + balls + ", overs=" + overs + ", wickets=" + wickets
-				+ ", fours=" + fours + ", sixes=" + sixes + ", wides=" + wides + ", noballs=" + noballs + ", byes="
-				+ byes + ", legbyes=" + legbyes + ", live_game_id=" + live_game_id + "]";
+		return "Match [isActive=" + isActive + ", live_game_id=" + live_game_id + ", id=" + id + ", score=" + score
+				+ ", balls=" + balls + ", overs=" + overs + ", wickets=" + wickets + ", fours=" + fours + ", sixes="
+				+ sixes + ", wides=" + wides + ", noballs=" + noballs + ", byes=" + byes + ", legbyes=" + legbyes + "]";
 	}
 
 }

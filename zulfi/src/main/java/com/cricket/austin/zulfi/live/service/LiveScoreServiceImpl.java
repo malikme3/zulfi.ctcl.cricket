@@ -10,6 +10,7 @@ import com.cricket.austin.zulfi.live.dao.InsertLiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.dao.LiveScoreDao;
 import com.cricket.austin.zulfi.live.dao.LiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.dao.UpdateLiveScoreDaoImpl;
+import com.cricket.austin.zulfi.live.model.Match;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
@@ -23,6 +24,13 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	@Autowired
 	private UpdateLiveScoreDaoImpl updateLiveScoreDaoImpl;
 	static final Logger logger = LoggerFactory.getLogger(LiveScoreDaoImpl.class);
+
+	@Override
+	public int syncScoreForm(ScoreForm scoreForm) {
+		syncMatchData(scoreForm.getMatch());
+
+		return 0;
+	}
 
 	@Override
 	public int insertWicket(Wicket wicket) {
@@ -39,52 +47,63 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	// Making sure, if update/insert fail then force to insert/update respectively
 	// and vice versa ...
 
+	protected int syncMatchData(Match match) {
+		logger.info("In syncMatchData with isActive: " + match.isActive());
+		int rows;
+		if (match.isActive()) {
+			rows = updateInsertMatchData(match);
+		} else {
+			rows = insertUpdateMatchData(match);
+		}
+		return rows;
+	}
+
 	/**** Match Data Insert/Update Start ****/
 
 	@Override
-	public int insertUpdateMatchData(ScoreForm scoreForm) {
+	public int insertUpdateMatchData(Match match) {
 
 		int rows = 0;
 
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
+		if (isEmptyNull(match.getLive_game_id())) {
 			logger.warn("No liveGameId in insertUpdateMatchData ");
 			return rows;
 		}
 
-		if (scoreForm.getMatch().getId() < 1) {
+		if (match.getId() < 1) {
 			logger.info("Data don't exist, Try to insert Match data");
 			try {
-				rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
+				rows = insertLiveScoreDaoImpl.insertMatchData(match);
 			} catch (Exception ex) {
 				logger.info("Insert failed, Try update Match data");
-				rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
+				rows = updateLiveScoreDaoImpl.updateMatchData(match);
 			}
 
 		} else {
 			logger.info("Data exist, Try update Match data");
-			rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
+			rows = updateLiveScoreDaoImpl.updateMatchData(match);
 			return rows;
 		}
 		return rows;
 	}
 
 	@Override
-	public int updateInsertMatchData(ScoreForm scoreForm) {
+	public int updateInsertMatchData(Match match) {
 
 		int rows = 0;
 
-		if (isEmptyNull(scoreForm.getLive_game_id())) {
+		if (isEmptyNull(match.getLive_game_id())) {
 			logger.warn("No liveGameId is provided");
 			return rows;
 		}
 
 		try {
 			logger.info("Try to insert Match data");
-			rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
+			rows = updateLiveScoreDaoImpl.updateMatchData(match);
 
 		} catch (Exception ex) {
 			logger.info("update failed, Try insert Match data");
-			rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
+			rows = insertLiveScoreDaoImpl.insertMatchData(match);
 		}
 		return rows;
 	}

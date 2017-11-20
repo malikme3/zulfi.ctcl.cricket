@@ -522,8 +522,8 @@ public class AppController {
 	@RequestMapping(value = { "/liveScoring/submitBallData" }, method = RequestMethod.POST)
 	public ResponseEntity<Integer> submitLiveScore(@RequestBody ScoreForm scoreForm) throws Exception {
 
-		logger.info("In AppController.submitLiveScore" + scoreForm);
-		int rows = liveScoreService.insertWicket(scoreForm.getWicket());
+		logger.info("In AppController.syncScoreForm()" + scoreForm);
+		int rows = liveScoreService.syncScoreForm(scoreForm);
 		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
 	}
 
