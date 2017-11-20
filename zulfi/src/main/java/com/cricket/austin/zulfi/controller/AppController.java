@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.cricket.austin.zulfi.live.model.ScoreForm;
+import com.cricket.austin.zulfi.live.service.LiveScoreService;
 import com.cricket.austin.zulfi.model.ClubsPage;
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Leagues;
@@ -57,6 +59,9 @@ public class AppController {
 
 	@Autowired
 	BattingRecordsService battingRecordsService;
+
+	@Autowired
+	LiveScoreService liveScoreService;
 
 	static final Logger logger = LoggerFactory.getLogger(AppController.class);
 
@@ -512,4 +517,23 @@ public class AppController {
 		List<Map<String, Object>> clubs = matchScoringService.getLatesMatchesSummary();
 		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
 	}
+
+	/**** Start: Live Scoring ***/
+	@RequestMapping(value = { "/liveScoring/submitBallData" }, method = RequestMethod.POST)
+	public ResponseEntity<Integer> submitLiveScore(@RequestBody ScoreForm scoreForm) throws Exception {
+
+		logger.info("In AppController.submitLiveScore" + scoreForm);
+		int rows = liveScoreService.submitWicket(scoreForm.getWicket());
+		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
+	}
+
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(value = { "/liveScoring/getScoreFormData" }, method = RequestMethod.GET)
+	public ResponseEntity<ScoreForm> getScoreFormData(@RequestParam String liveGameId) throws Exception {
+		logger.info("In AppController.getScoreFormData" + liveGameId);
+		ScoreForm scoreForm = liveScoreService.getScoreFrom(liveGameId);
+		return new ResponseEntity<ScoreForm>(scoreForm, HttpStatus.OK);
+	}
+
+	/**** Start: End Scoring ***/
 }
