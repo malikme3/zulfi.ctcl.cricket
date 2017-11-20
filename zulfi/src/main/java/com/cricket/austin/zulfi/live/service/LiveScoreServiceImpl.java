@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.cricket.austin.zulfi.live.dao.InsertLiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.dao.LiveScoreDao;
 import com.cricket.austin.zulfi.live.dao.LiveScoreDaoImpl;
+import com.cricket.austin.zulfi.live.dao.UpdateLiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
@@ -16,6 +18,10 @@ import com.cricket.austin.zulfi.live.model.Wicket;
 public class LiveScoreServiceImpl implements LiveScoreService {
 	@Autowired
 	private LiveScoreDao LiveScoreDao;
+	@Autowired
+	private InsertLiveScoreDaoImpl insertLiveScoreDaoImpl;
+	@Autowired
+	private UpdateLiveScoreDaoImpl updateLiveScoreDaoImpl;
 	static final Logger logger = LoggerFactory.getLogger(LiveScoreDaoImpl.class);
 
 	@Override
@@ -29,6 +35,200 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	public ScoreForm getScoreFrom(String machId) {
 		return LiveScoreDao.getScoreFrom(machId);
 	}
+
+	// Making sure, if update/insert fail then force to insert/update respectively
+	// and vice versa ...
+
+	/**** Match Data Insert/Update Start ****/
+
+	@Override
+	public int insertUpdateMatchData(ScoreForm scoreForm) {
+
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId in insertUpdateMatchData ");
+			return rows;
+		}
+
+		if (scoreForm.getMatch().getId() < 1) {
+			logger.info("Data don't exist, Try to insert Match data");
+			try {
+				rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
+			} catch (Exception ex) {
+				logger.info("Insert failed, Try update Match data");
+				rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
+			}
+
+		} else {
+			logger.info("Data exist, Try update Match data");
+			rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
+			return rows;
+		}
+		return rows;
+	}
+
+	@Override
+	public int updateInsertMatchData(ScoreForm scoreForm) {
+
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided");
+			return rows;
+		}
+
+		try {
+			logger.info("Try to insert Match data");
+			rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
+
+		} catch (Exception ex) {
+			logger.info("update failed, Try insert Match data");
+			rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
+		}
+		return rows;
+	}
+
+	/**** Match Data Insert/Update END ****/
+	/**** Bowler Data Insert/Update Start ****/
+
+	@Override
+	public int insertUpdateBatsmanData(ScoreForm scoreForm) {
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided in insertUpdateBatsmanData ");
+			return rows;
+		}
+
+		try {
+			logger.info("Try to insert Batsman Data");
+			// TODO: check for batsman 1&2
+			rows = insertLiveScoreDaoImpl.insertBatsmanData((scoreForm.getBatsman_1()));
+			rows = insertLiveScoreDaoImpl.insertBatsmanData((scoreForm.getBatsman_1()));
+		} catch (Exception ex) {
+			logger.info("insert failed, Try update Batsman Data");
+			// TODO: check for batsman 1&2
+			rows = updateLiveScoreDaoImpl.updateBatsmanData((scoreForm.getBatsman_1()));
+			rows = updateLiveScoreDaoImpl.updateBatsmanData((scoreForm.getBatsman_1()));
+
+		}
+		return rows;
+	}
+
+	@Override
+	public int updateInsertBatsmanData(ScoreForm scoreForm) {
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided in updateInsertBatsmanData ");
+			return rows;
+		}
+
+		try {
+			// TODO: check for batsman 1&2
+			logger.info("updateInsertBatsmanData :update batsman data");
+			rows = updateLiveScoreDaoImpl.updateBatsmanData((scoreForm.getBatsman_1()));
+			rows = updateLiveScoreDaoImpl.updateBatsmanData((scoreForm.getBatsman_2()));
+
+		} catch (Exception ex) {
+			logger.info("update failed, Try insert Batsman data");
+			// TODO: check for batsman 1&2
+			rows = insertLiveScoreDaoImpl.insertBatsmanData(scoreForm.getBatsman_1());
+			rows = insertLiveScoreDaoImpl.insertBatsmanData(scoreForm.getBatsman_2());
+		}
+		return rows;
+	}
+
+	/**** Batsman Data Insert/Update END ****/
+	/**** Bowler Data Insert/Update Start ****/
+
+	@Override
+	public int insertUpdateBowlerData(ScoreForm scoreForm) {
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided");
+			return rows;
+		}
+
+		try {
+			logger.info("Try to insert Bolwer data");
+			rows = insertLiveScoreDaoImpl.insertBowlerData(scoreForm.getBowler());
+		} catch (Exception ex) {
+			logger.info("insert failed, Try update Bolwer data");
+			rows = updateLiveScoreDaoImpl.updateBowlerData(scoreForm.getBowler());
+
+		}
+		return rows;
+	}
+
+	@Override
+	public int updateInsertBowlerData(ScoreForm scoreForm) {
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided in updateInsertBatsmanData ");
+			return rows;
+		}
+
+		try {
+			logger.info("updateInsertBatsmanData :update data");
+			rows = updateLiveScoreDaoImpl.updateBowlerData(scoreForm.getBowler());
+
+		} catch (Exception ex) {
+			logger.info("update failed, Try insert data");
+			rows = insertLiveScoreDaoImpl.insertBowlerData(scoreForm.getBowler());
+		}
+		return rows;
+	}
+
+	/**** Bowler Data Insert/Update END ****/
+	/**** Wicket Data Insert/Update Start ****/
+
+	@Override
+	public int insertUpdateWicketData(ScoreForm scoreForm) {
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided in insertUpdateWicketData() ");
+			return rows;
+		}
+
+		try {
+			logger.info("Try to insert Wicket Data");
+			rows = insertLiveScoreDaoImpl.insertWicketData((scoreForm.getWicket()));
+		} catch (Exception ex) {
+			logger.info("insert failed, Try update Wicket Data");
+			rows = updateLiveScoreDaoImpl.updateWicketsData((scoreForm.getWicket()));
+
+		}
+		return rows;
+	}
+
+	@Override
+	public int updateInsertWicketData(ScoreForm scoreForm) {
+		int rows = 0;
+
+		if (isEmptyNull(scoreForm.getLive_game_id())) {
+			logger.warn("No liveGameId is provided in updateInsertBatsmanData ");
+			return rows;
+		}
+
+		try {
+
+			logger.info("updateInsertBatsmanData :update data");
+			rows = updateLiveScoreDaoImpl.updateWicketsData((scoreForm.getWicket()));
+
+		} catch (Exception ex) {
+			logger.info("update failed, Try insert data");
+			rows = insertLiveScoreDaoImpl.insertWicketData((scoreForm.getWicket()));
+
+		}
+		return rows;
+	}
+
+	/**** Wicket Data Insert/Update End ****/
 
 	public boolean isEmptyNull(String s) {
 		if (".".equalsIgnoreCase(s) || s.length() < 0 || s == null) {

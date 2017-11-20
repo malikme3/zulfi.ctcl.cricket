@@ -24,10 +24,6 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 	private JdbcTemplate jdbcTemplate;
 	@Autowired
 	LiveScoreServiceImpl liveScoreServiceImpl;
-	@Autowired
-	private InsertLiveScoreDaoImpl insertLiveScoreDaoImpl;
-	@Autowired
-	private UpdateLiveScoreDaoImpl updateLiveScoreDaoImpl;
 
 	@Autowired
 	public void setDataSource(DataSource dataSource) {
@@ -35,6 +31,12 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 	}
 
 	static final Logger logger = LoggerFactory.getLogger(LiveScoreDaoImpl.class);
+
+	@Override
+	public int submitScoreFormData(ScoreForm scoreForm) {
+		// int row = insertUpdateMatchData(scoreForm);
+		return 0;
+	}
 
 	@Override
 	public ScoreForm getScoreFrom(String liveGameId) {
@@ -47,7 +49,6 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 		scoreForm.setBatsman_2(getBatsmanData(gId, 3));
 		scoreForm.setBowler(getBowlerData(gId, pId));
 		scoreForm.setWicket(getWicketData(gId, 2));
-
 		return scoreForm;
 	}
 
@@ -63,7 +64,6 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 			match = null;
 			logger.warn("MatchData is not available for liveGameId#: " + liveGameId);
 		}
-
 		return match;
 	}
 
@@ -79,9 +79,7 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 			batsman = null;
 			logger.warn("BatsmanData is not available for liveGameId# " + liveGameId);
 		}
-
 		return batsman;
-
 	}
 
 	@Override
@@ -96,7 +94,6 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 			bowler = null;
 			logger.warn("BowlerData is not available for liveGameId# " + liveGameId);
 		}
-
 		return bowler;
 	}
 
@@ -112,115 +109,7 @@ public class LiveScoreDaoImpl implements LiveScoreDao {
 			wicket = null;
 			logger.warn("WicketData is not available for liveGameId# " + liveGameId);
 		}
-
 		return wicket;
 	}
 
-	// Making sure, if update/insert fail then force to insert/update respectively
-	// and vice versa ...
-
-	// insert?Update Match Data
-	@Override
-	public int insertUpdateMatchData(ScoreForm scoreForm) {
-
-		int rows = 0;
-
-		if (scoreForm.getMatch().getId() < 1) {
-			logger.info("Data don't exist, Try to insert data");
-			try {
-				rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
-			} catch (Exception ex) {
-				logger.info("Insert failed, Try update data");
-				rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
-			}
-
-		} else {
-			logger.info("Data exist, Try update bowling details");
-			rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
-			return rows;
-		}
-		return rows;
-	}
-
-	@Override
-	public int updateInsertMatchData(ScoreForm scoreForm) {
-
-		int rows = 0;
-
-		if (scoreForm.getMatch().getId() < 0) {
-			logger.warn("Ooopps id is not provided in updateInsertMatchData Sid#" + scoreForm.getLive_game_id());
-			return rows;
-		}
-
-		logger.info("Data don't exist, Try to insert data");
-
-		try {
-			rows = updateLiveScoreDaoImpl.updateMatchData(scoreForm.getMatch());
-
-		} catch (Exception ex) {
-			logger.info("update failed, Try insert data");
-			rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
-		}
-		return rows;
-	}
-
-	// Insert?Update Batsmen
-	@Override
-	public int insertUpdateBatsmanData(ScoreForm scoreForm) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int updateInsertBatsmanData(ScoreForm scoreForm) {
-		int rows = 0;
-
-		if (scoreForm.getMatch().getId() < 0) {
-			logger.warn("No matchId in updateInsertBatsmenData for gameLiveId#" + scoreForm.getLive_game_id());
-			return rows;
-		}
-
-		logger.info("No matchId in updateInsertBatsmenData exist, Try to insert data");
-
-		try {
-			// TODO: check for batsman 1&2
-			rows = updateLiveScoreDaoImpl.updateBatsmanData((scoreForm.getBatsman_1()));
-			rows = updateLiveScoreDaoImpl.updateBatsmanData((scoreForm.getBatsman_2()));
-
-		} catch (Exception ex) {
-			logger.info("update failed, Try insert data");
-			// rows = insertLiveScoreDaoImpl.insertMatchData(scoreForm.getMatch());
-		}
-		return rows;
-	}
-
-	@Override
-	public int updateInsertBowlerData(ScoreForm scoreForm) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int updateInsertWicketData(ScoreForm scoreForm) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int submitScoreFormData(ScoreForm scoreForm) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int insertUpdateBowlerData(ScoreForm scoreForm) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int insertUpdateWicketData(ScoreForm scoreForm) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 }
