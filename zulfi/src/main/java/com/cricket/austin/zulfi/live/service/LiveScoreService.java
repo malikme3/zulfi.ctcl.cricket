@@ -24,7 +24,7 @@ public interface LiveScoreService {
 
 	public int insertUpdateBowlerData(ScoreForm scoreForm);
 
-	public int updateInsertWicketData(ScoreForm scoreForm);
+	public int updateInsertWicketData(Wicket wicket);
 
-	public int insertUpdateWicketData(ScoreForm scoreForm);
+	public int insertUpdateWicketData(Wicket wicket);
 }

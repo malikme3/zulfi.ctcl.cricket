@@ -50,8 +50,16 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		try {
 			scoreForm.getBatsman_1().setLive_game_id(scoreForm.getLive_game_id());
 			// TODO: check if striker batsman is 1 or 2
-			rows = syncBatsmanData(scoreForm.getBatsman_1());
+			// rows = syncBatsmanData(scoreForm.getBatsman_1());
 			// rows = syncBatsmanData(scoreForm.getBatsman_2());
+		} catch (Exception ex) {
+			logger.warn("Error in syncMatchData. " + ex);
+		}
+
+		// sync Wicket Data
+		try {
+			scoreForm.getWicket().setLive_game_id(scoreForm.getLive_game_id());
+			rows = syncWicketData(scoreForm.getWicket());
 		} catch (Exception ex) {
 			logger.warn("Error in syncMatchData. " + ex);
 		}
@@ -100,15 +108,15 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		return rows;
 	}
 
-	protected int syncWicketData(Batsman batsman) {
-		logger.info("In syncBatsmanchData with isActive: " + batsman.isActive());
+	protected int syncWicketData(Wicket wicket) {
+		logger.info("In syncBatsmanchData with isActive: " + wicket.isActive());
 		int rows;
-		if (batsman.isActive()) {
-			batsman.setLive_game_id("RRCC-11142017");
-			rows = updateInsertBatsmanData(batsman);
+		if (wicket.isActive()) {
+			wicket.setLive_game_id("RRCC-11142017");
+			rows = updateInsertWicketData(wicket);
 		} else {
-			batsman.setActive(true);
-			rows = insertUpdateBatsmanData(batsman);
+			wicket.setActive(true);
+			rows = insertUpdateWicketData(wicket);
 		}
 		return rows;
 	}
@@ -223,32 +231,32 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	/**** Wicket Data Insert/Update Start ****/
 
 	@Override
-	public int insertUpdateWicketData(ScoreForm scoreForm) {
+	public int insertUpdateWicketData(Wicket wicket) {
 		int rows = 0;
 
 		try {
 			logger.info("Try to insert Wicket Data");
-			rows = insertLiveScoreDaoImpl.insertWicketData((scoreForm.getWicket()));
+			rows = insertLiveScoreDaoImpl.insertWicketData((wicket));
 		} catch (Exception ex) {
 			logger.info("insert failed, Try update Wicket Data");
-			rows = updateLiveScoreDaoImpl.updateWicketsData((scoreForm.getWicket()));
+			rows = updateLiveScoreDaoImpl.updateWicketsData((wicket));
 
 		}
 		return rows;
 	}
 
 	@Override
-	public int updateInsertWicketData(ScoreForm scoreForm) {
+	public int updateInsertWicketData(Wicket wicket) {
 		int rows = 0;
 
 		try {
 
 			logger.info("updateInsertBatsmanData :update data");
-			rows = updateLiveScoreDaoImpl.updateWicketsData((scoreForm.getWicket()));
+			rows = updateLiveScoreDaoImpl.updateWicketsData((wicket));
 
 		} catch (Exception ex) {
 			logger.info("update failed, Try insert data");
-			rows = insertLiveScoreDaoImpl.insertWicketData((scoreForm.getWicket()));
+			rows = insertLiveScoreDaoImpl.insertWicketData((wicket));
 
 		}
 		return rows;

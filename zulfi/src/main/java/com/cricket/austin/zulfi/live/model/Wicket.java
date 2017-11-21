@@ -1,8 +1,17 @@
 package com.cricket.austin.zulfi.live.model;
 
 public class Wicket {
+	boolean active;
 	int id, wicket_number, fow_score;
 	String live_game_id, batsman_name, bowler_name, how_out, fielder_name;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
 
 	public int getId() {
 		return id;
@@ -70,9 +79,9 @@ public class Wicket {
 
 	@Override
 	public String toString() {
-		return "Wicket [id=" + id + ", wicket_number=" + wicket_number + ", fow_score=" + fow_score + ", live_game_id="
-				+ live_game_id + ", batsman_name=" + batsman_name + ", bowler_name=" + bowler_name + ", how_out="
-				+ how_out + ", fielder_name=" + fielder_name + "]";
+		return "Wicket [active=" + active + ", id=" + id + ", wicket_number=" + wicket_number + ", fow_score="
+				+ fow_score + ", live_game_id=" + live_game_id + ", batsman_name=" + batsman_name + ", bowler_name="
+				+ bowler_name + ", how_out=" + how_out + ", fielder_name=" + fielder_name + "]";
 	}
 
 }

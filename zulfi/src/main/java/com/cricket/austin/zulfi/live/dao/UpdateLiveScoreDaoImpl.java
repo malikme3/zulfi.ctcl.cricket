@@ -74,11 +74,11 @@ public class UpdateLiveScoreDaoImpl implements UpdateLiveScoreDao {
 	@Override
 	public int updateWicketsData(Wicket wick) {
 		String sql = "UPDATE `world`.`wicket_livescore` "
-				+ "SET `live_game_id`=IFNULL(?, live_game_id ), `wicket_number`=IFNULL(?, wicket_number ), `fow_score`=IFNULL(?, fow_score ), `batsman_name`=IFNULL(?, batsman_name ), "
+				+ "SET `fow_score`=IFNULL(?, fow_score ), `batsman_name`=IFNULL(?, batsman_name ), "
 				+ "`bowler_name`=IFNULL(?, bowler_name ), `how_out`=IFNULL(?, how_out ), `fielder_name`=IFNULL(?, fielder_name ) "
-				+ "WHERE `id`= ?";
-		Object[] wicket = new Object[] { wick.getLive_game_id(), wick.getWicket_number(), wick.getFow_score(),
-				wick.getBatsman_name(), wick.getBowler_name(), wick.getHow_out(), wick.getFielder_name() };
+				+ "WHERE live_game_id = ? AND wicket_number = ?";
+		Object[] wicket = new Object[] { wick.getFow_score(), wick.getBatsman_name(), wick.getBowler_name(),
+				wick.getHow_out(), wick.getFielder_name(), wick.getLive_game_id(), wick.getWicket_number() };
 		int rows = jdbcTemplate.update(sql, wicket);
 		logger.info("Update Wicket data rows #" + rows);
 		return rows;
