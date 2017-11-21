@@ -42,7 +42,7 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		// sync Match data
 		try {
 			scoreForm.getMatch().setLive_game_id(scoreForm.getLive_game_id());
-			// rows = syncMatchData(scoreForm.getMatch());
+			rows = syncMatchData(scoreForm.getMatch());
 		} catch (Exception ex) {
 			logger.warn("Error in syncMatchData. " + ex);
 		}
@@ -84,8 +84,14 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	}
 
 	@Override
-	public ScoreForm getScoreFrom(String machId) {
-		return LiveScoreDao.getScoreFrom(machId);
+	public ScoreForm getScoreFrom(String liveGameId) {
+		ScoreForm scoreForm = new ScoreForm();
+		scoreForm.setMatch(LiveScoreDao.getMatchData(liveGameId));
+		scoreForm.setBatsman_1(LiveScoreDao.getBatsmanData(liveGameId, 2));
+		scoreForm.setBatsman_2(LiveScoreDao.getBatsmanData(liveGameId, 3));
+		scoreForm.setBowler(LiveScoreDao.getBowlerData(liveGameId, 2));
+		scoreForm.setWicket(LiveScoreDao.getWicketData(liveGameId, 2));
+		return scoreForm;
 	}
 
 	// Making sure, if update/insert fail then force to insert/update respectively
