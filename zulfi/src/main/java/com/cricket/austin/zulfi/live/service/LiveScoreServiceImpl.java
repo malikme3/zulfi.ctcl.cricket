@@ -11,6 +11,7 @@ import com.cricket.austin.zulfi.live.dao.LiveScoreDao;
 import com.cricket.austin.zulfi.live.dao.LiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.dao.UpdateLiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.model.Batsman;
+import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
@@ -50,18 +51,26 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		try {
 			scoreForm.getBatsman_1().setLive_game_id(scoreForm.getLive_game_id());
 			// TODO: check if striker batsman is 1 or 2
-			// rows = syncBatsmanData(scoreForm.getBatsman_1());
+			rows = syncBatsmanData(scoreForm.getBatsman_1());
 			// rows = syncBatsmanData(scoreForm.getBatsman_2());
 		} catch (Exception ex) {
-			logger.warn("Error in syncMatchData. " + ex);
+			logger.warn("Error in syncBatsmanData. " + ex);
+		}
+
+		// sync Bowler Data
+		try {
+			scoreForm.getBowler().setLive_game_id(scoreForm.getLive_game_id());
+			// rows = syncBowlerData(scoreForm.getBowler());
+		} catch (Exception ex) {
+			logger.warn("Error in syncBowlerData. " + ex);
 		}
 
 		// sync Wicket Data
 		try {
 			scoreForm.getWicket().setLive_game_id(scoreForm.getLive_game_id());
-			rows = syncWicketData(scoreForm.getWicket());
+			// rows = syncWicketData(scoreForm.getWicket());
 		} catch (Exception ex) {
-			logger.warn("Error in syncMatchData. " + ex);
+			logger.warn("Error in syncWicketData. " + ex);
 		}
 
 		return rows;
@@ -104,6 +113,19 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		} else {
 			batsman.setActive(true);
 			rows = insertUpdateBatsmanData(batsman);
+		}
+		return rows;
+	}
+
+	protected int syncBowlerData(Bowler bowler) {
+		logger.info("In syncBowlerData with isActive: " + bowler.isActive());
+		int rows;
+		if (bowler.isActive()) {
+			bowler.setLive_game_id("RRCC-11142017");
+			rows = updateInsertBowlerData(bowler);
+		} else {
+			bowler.setActive(true);
+			rows = insertUpdateBowlerData(bowler);
 		}
 		return rows;
 	}
@@ -174,7 +196,6 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		} catch (Exception ex) {
 			logger.info("insert failed, Try update Batsman Data");
 			rows = updateLiveScoreDaoImpl.updateBatsmanData((batsman));
-
 		}
 		return rows;
 	}
@@ -198,31 +219,31 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	/**** Bowler Data Insert/Update Start ****/
 
 	@Override
-	public int insertUpdateBowlerData(ScoreForm scoreForm) {
+	public int insertUpdateBowlerData(Bowler bowler) {
 		int rows = 0;
 
 		try {
 			logger.info("Try to insert Bolwer data");
-			rows = insertLiveScoreDaoImpl.insertBowlerData(scoreForm.getBowler());
+			rows = insertLiveScoreDaoImpl.insertBowlerData(bowler);
 		} catch (Exception ex) {
 			logger.info("insert failed, Try update Bolwer data");
-			rows = updateLiveScoreDaoImpl.updateBowlerData(scoreForm.getBowler());
+			rows = updateLiveScoreDaoImpl.updateBowlerData(bowler);
 
 		}
 		return rows;
 	}
 
 	@Override
-	public int updateInsertBowlerData(ScoreForm scoreForm) {
+	public int updateInsertBowlerData(Bowler bowler) {
 		int rows = 0;
 
 		try {
 			logger.info("updateInsertBatsmanData :update data");
-			rows = updateLiveScoreDaoImpl.updateBowlerData(scoreForm.getBowler());
+			rows = updateLiveScoreDaoImpl.updateBowlerData(bowler);
 
 		} catch (Exception ex) {
 			logger.info("update failed, Try insert data");
-			rows = insertLiveScoreDaoImpl.insertBowlerData(scoreForm.getBowler());
+			rows = insertLiveScoreDaoImpl.insertBowlerData(bowler);
 		}
 		return rows;
 	}

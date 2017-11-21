@@ -59,13 +59,13 @@ public class UpdateLiveScoreDaoImpl implements UpdateLiveScoreDao {
 	@Override
 	public int updateBowlerData(Bowler bow) {
 		String sql = "UPDATE `world`.`bowler_livescore` "
-				+ "SET `live_game_id`=IFNULL(?, live_game_id ), name`= IFNULL(?, name ), `player_id`=IFNULL(?, player_id), `balls`=IFNULL(?, balls ), `overs`=IFNULL(?, overs), "
-				+ "`maiden`=IFNULL(?, maiden), `score`=IFNULL(?, score), `wickets`=IFNULL(?, wickets),` fours`=IFNULL(?, fours), `sixes`=IFNULL(?, sixes), "
-				+ "`economy`=IFNULL(?, economy), " + "`wides`=IFNULL(?, wides), `noballs`=IFNULL(?, noballs) "
-				+ "WHERE `id`= ? ";
-		Object[] bowler = new Object[] { bow.getLive_game_id(), bow.getName(), bow.getPlayer_id(), bow.getBalls(),
-				bow.getOvers(), bow.getMaiden(), bow.getScore(), bow.getWickets(), bow.getFours(), bow.getSixes(),
-				bow.getEconomy(), bow.getWides(), bow.getNoballs(), bow.getId() };
+				+ "SET `name`= IFNULL(?, name ), `player_id`=IFNULL(?, player_id), `balls`=IFNULL(?, balls ), `overs`=IFNULL(?, overs), "
+				+ "`maiden`=IFNULL(?, maiden), `score`=IFNULL(?, score), `wickets`=IFNULL(?, wickets), `fours`=IFNULL(?, fours), `sixes`=IFNULL(?, sixes), "
+				+ "`economy`=IFNULL(?, economy), `wides`=IFNULL(?, wides), `noballs`=IFNULL(?, noballs) "
+				+ "WHERE live_game_id = ? AND position = ?";
+		Object[] bowler = new Object[] { bow.getName(), bow.getPlayer_id(), bow.getBalls(), bow.getOvers(),
+				bow.getMaiden(), bow.getScore(), bow.getWickets(), bow.getFours(), bow.getSixes(), bow.getEconomy(),
+				bow.getWides(), bow.getNoballs(), bow.getLive_game_id(), bow.getPosition() };
 		int rows = jdbcTemplate.update(sql, bowler);
 		logger.info("Update Bowler data rows #" + rows);
 		return rows;

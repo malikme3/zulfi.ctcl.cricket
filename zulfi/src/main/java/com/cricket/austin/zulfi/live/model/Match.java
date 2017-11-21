@@ -2,8 +2,9 @@ package com.cricket.austin.zulfi.live.model;
 
 public class Match {
 	boolean active;
+	float overs, average;
 	String live_game_id;
-	int id, score, balls, overs, wickets, fours, sixes, wides, noballs, byes, legbyes;
+	int id, score, balls, wickets, fours, sixes, wides, noballs, byes, legbyes;
 
 	public boolean isActive() {
 		return active;
@@ -11,6 +12,22 @@ public class Match {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public float getOvers() {
+		return overs;
+	}
+
+	public void setOvers(float overs) {
+		this.overs = overs;
+	}
+
+	public float getAverage() {
+		return average;
+	}
+
+	public void setAverage(float average) {
+		this.average = average;
 	}
 
 	public String getLive_game_id() {
@@ -43,14 +60,6 @@ public class Match {
 
 	public void setBalls(int balls) {
 		this.balls = balls;
-	}
-
-	public int getOvers() {
-		return overs;
-	}
-
-	public void setOvers(int overs) {
-		this.overs = overs;
 	}
 
 	public int getWickets() {
@@ -111,9 +120,10 @@ public class Match {
 
 	@Override
 	public String toString() {
-		return "Match [active=" + active + ", live_game_id=" + live_game_id + ", id=" + id + ", score=" + score
-				+ ", balls=" + balls + ", overs=" + overs + ", wickets=" + wickets + ", fours=" + fours + ", sixes="
-				+ sixes + ", wides=" + wides + ", noballs=" + noballs + ", byes=" + byes + ", legbyes=" + legbyes + "]";
+		return "Match [active=" + active + ", overs=" + overs + ", average=" + average + ", live_game_id="
+				+ live_game_id + ", id=" + id + ", score=" + score + ", balls=" + balls + ", wickets=" + wickets
+				+ ", fours=" + fours + ", sixes=" + sixes + ", wides=" + wides + ", noballs=" + noballs + ", byes="
+				+ byes + ", legbyes=" + legbyes + "]";
 	}
 
 }

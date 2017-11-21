@@ -1,8 +1,50 @@
 package com.cricket.austin.zulfi.live.model;
 
 public class Bowler {
-	int id, player_id, position, balls, overs, maiden, score, wickets, economy, fours, sixes, wides, noballs;
+	boolean active;
 	String live_game_id, name;
+	float overs, economy;
+	int id, player_id, position, balls, maiden, score, wickets, fours, sixes, wides, noballs;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getLive_game_id() {
+		return live_game_id;
+	}
+
+	public void setLive_game_id(String live_game_id) {
+		this.live_game_id = live_game_id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public float getOvers() {
+		return overs;
+	}
+
+	public void setOvers(float overs) {
+		this.overs = overs;
+	}
+
+	public float getEconomy() {
+		return economy;
+	}
+
+	public void setEconomy(float economy) {
+		this.economy = economy;
+	}
 
 	public int getId() {
 		return id;
@@ -36,14 +78,6 @@ public class Bowler {
 		this.balls = balls;
 	}
 
-	public int getOvers() {
-		return overs;
-	}
-
-	public void setOvers(int overs) {
-		this.overs = overs;
-	}
-
 	public int getMaiden() {
 		return maiden;
 	}
@@ -66,14 +100,6 @@ public class Bowler {
 
 	public void setWickets(int wickets) {
 		this.wickets = wickets;
-	}
-
-	public int getEconomy() {
-		return economy;
-	}
-
-	public void setEconomy(int economy) {
-		this.economy = economy;
 	}
 
 	public int getFours() {
@@ -108,28 +134,12 @@ public class Bowler {
 		this.noballs = noballs;
 	}
 
-	public String getLive_game_id() {
-		return live_game_id;
-	}
-
-	public void setLive_game_id(String live_game_id) {
-		this.live_game_id = live_game_id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	@Override
 	public String toString() {
-		return "Bowler [id=" + id + ", player_id=" + player_id + ", position=" + position + ", balls=" + balls
-				+ ", overs=" + overs + ", maiden=" + maiden + ", score=" + score + ", wickets=" + wickets + ", economy="
-				+ economy + ", fours=" + fours + ", sixes=" + sixes + ", wides=" + wides + ", noballs=" + noballs
-				+ ", live_game_id=" + live_game_id + ", name=" + name + "]";
+		return "Bowler [active=" + active + ", live_game_id=" + live_game_id + ", name=" + name + ", overs=" + overs
+				+ ", economy=" + economy + ", id=" + id + ", player_id=" + player_id + ", position=" + position
+				+ ", balls=" + balls + ", maiden=" + maiden + ", score=" + score + ", wickets=" + wickets + ", fours="
+				+ fours + ", sixes=" + sixes + ", wides=" + wides + ", noballs=" + noballs + "]";
 	}
 
 }
