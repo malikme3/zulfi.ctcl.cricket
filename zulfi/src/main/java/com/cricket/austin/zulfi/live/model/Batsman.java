@@ -1,9 +1,33 @@
 package com.cricket.austin.zulfi.live.model;
 
 public class Batsman {
-
-	int id, player_id, position, balls, overs, score, fours, sixes;
+	boolean active;
 	String name, live_game_id;
+	int id, player_id, position, balls, overs, score, fours, sixes;
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLive_game_id() {
+		return live_game_id;
+	}
+
+	public void setLive_game_id(String live_game_id) {
+		this.live_game_id = live_game_id;
+	}
 
 	public int getId() {
 		return id;
@@ -69,27 +93,11 @@ public class Batsman {
 		this.sixes = sixes;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLive_game_id() {
-		return live_game_id;
-	}
-
-	public void setLive_game_id(String live_game_id) {
-		this.live_game_id = live_game_id;
-	}
-
 	@Override
 	public String toString() {
-		return "Batsman [id=" + id + ", player_id=" + player_id + ", position=" + position + ", balls=" + balls
-				+ ", overs=" + overs + ", score=" + score + ", fours=" + fours + ", sixes=" + sixes + ", name=" + name
-				+ ", live_game_id=" + live_game_id + "]";
+		return "Batsman [active=" + active + ", name=" + name + ", live_game_id=" + live_game_id + ", id=" + id
+				+ ", player_id=" + player_id + ", position=" + position + ", balls=" + balls + ", overs=" + overs
+				+ ", score=" + score + ", fours=" + fours + ", sixes=" + sixes + "]";
 	}
 
 }

@@ -1,16 +1,16 @@
 package com.cricket.austin.zulfi.live.model;
 
 public class Match {
-	boolean isActive;
+	boolean active;
 	String live_game_id;
 	int id, score, balls, overs, wickets, fours, sixes, wides, noballs, byes, legbyes;
 
 	public boolean isActive() {
-		return isActive;
+		return active;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public String getLive_game_id() {
@@ -111,7 +111,7 @@ public class Match {
 
 	@Override
 	public String toString() {
-		return "Match [isActive=" + isActive + ", live_game_id=" + live_game_id + ", id=" + id + ", score=" + score
+		return "Match [active=" + active + ", live_game_id=" + live_game_id + ", id=" + id + ", score=" + score
 				+ ", balls=" + balls + ", overs=" + overs + ", wickets=" + wickets + ", fours=" + fours + ", sixes="
 				+ sixes + ", wides=" + wides + ", noballs=" + noballs + ", byes=" + byes + ", legbyes=" + legbyes + "]";
 	}

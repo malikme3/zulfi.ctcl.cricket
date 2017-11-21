@@ -29,18 +29,15 @@ public class UpdateLiveScoreDaoImpl implements UpdateLiveScoreDao {
 	public int updateMatchData(Match match) {
 
 		String sql = "UPDATE `world`.`match_livescore` "
-				+ "SET `balls`= IFNULL(?, balls ), `overs`=IFNULL(?, overs), `score`=IFNULL(?, score) , `wickets`=IFNULL(?,wickets) , `fours` =IFNULL(? ,fours) , `sixes` =IFNULL(? ,sixes), "
-				+ "`wides` =IFNULL(? ,wides), `noballs` =IFNULL(? ,noballs), `byes` =IFNULL(? ,byes), `legbyes` =IFNULL(? ,legbyes) "
-				+ "WHERE live_game_id =?";
+				+ "SET `balls`= IFNULL(?, balls ), `overs`=IFNULL(?, overs), `score`=IFNULL(?, score) , `wickets`=IFNULL(?,wickets), "
+				+ "`fours` =IFNULL(? ,fours) , `sixes` =IFNULL(? ,sixes), `wides` =IFNULL(? ,wides), `noballs` =IFNULL(? ,noballs), "
+				+ "`byes` =IFNULL(? ,byes), `legbyes` =IFNULL(? ,legbyes) " + "WHERE live_game_id =?";
+
 		Object[] mat = new Object[] { match.getBalls(), match.getOvers(), match.getScore(), match.getWickets(),
 				match.getFours(), match.getSixes(), match.getWides(), match.getNoballs(), match.getByes(),
 				match.getLegbyes(), match.getLive_game_id() };
-		int rows = 0;
-		try {
-			rows = jdbcTemplate.update(sql, mat);
-		} catch (Exception ex) {
-			logger.error("Error in updateMatchData. GameLiveId #" + match.getLive_game_id());
-		}
+
+		int rows = jdbcTemplate.update(sql, mat);
 		logger.info("Update Match data rows #:" + rows);
 		return rows;
 
@@ -49,10 +46,11 @@ public class UpdateLiveScoreDaoImpl implements UpdateLiveScoreDao {
 	@Override
 	public int updateBatsmanData(Batsman bats) {
 		String sql = "UPDATE `world`.`batsman_livescore` "
-				+ "SET `live_game_id`=IFNULL(?, live_game_id ), name`= IFNULL(?, name ), `player_id`=IFNULL(?, player_id), `balls`= IFNULL(?, balls ), `overs`=IFNULL(?, overs), "
-				+ "`score`=IFNULL(?, score), " + "`fours`=IFNULL(?, fours),`sixes`=IFNULL(?, sixes) " + "WHERE `id`= ?";
-		Object[] batsman = new Object[] { bats.getLive_game_id(), bats.getName(), bats.getPlayer_id(), bats.getBalls(),
-				bats.getOvers(), bats.getScore(), bats.getFours(), bats.getSixes(), bats.getId() };
+				+ "SET `name`= IFNULL(?, name ), `player_id`=IFNULL(?, player_id), `balls`= IFNULL(?, balls ), `overs`=IFNULL(?, overs), "
+				+ "`score`=IFNULL(?, score), " + "`fours`=IFNULL(?, fours),`sixes`=IFNULL(?, sixes) "
+				+ "WHERE live_game_id= ?";
+		Object[] batsman = new Object[] { bats.getName(), bats.getPlayer_id(), bats.getBalls(), bats.getOvers(),
+				bats.getScore(), bats.getFours(), bats.getSixes(), bats.getLive_game_id() };
 		int rows = jdbcTemplate.update(sql, batsman);
 		logger.info("Update Batsman data rows #" + rows);
 		return rows;
