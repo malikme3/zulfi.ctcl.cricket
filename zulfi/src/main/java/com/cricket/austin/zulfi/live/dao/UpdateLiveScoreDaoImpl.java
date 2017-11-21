@@ -29,13 +29,18 @@ public class UpdateLiveScoreDaoImpl implements UpdateLiveScoreDao {
 	public int updateMatchData(Match match) {
 
 		String sql = "UPDATE `world`.`match_livescore` "
-				+ "SET live_game_id`=IFNULL(?, live_game_id ), `balls`= IFNULL(?, balls ), `overs`=IFNULL(?, overs), `score`=IFNULL(?, score), `wickets`=IFNULL(?, wickets),"
-				+ " fours`=IFNULL(?, fours),  `sixes`=IFNULL(?, sixes), `wides`=IFNULL(?, wides), `noballs`=IFNULL(?, noballs), `byes`= IFNULL(?, byes), "
-				+ "`legbyes`= IFNULL(?, legbyes) " + "WHERE `id`=?";
-		Object[] mat = new Object[] { match.getLive_game_id(), match.getBalls(), match.getOvers(), match.getWickets(),
+				+ "SET `balls`= IFNULL(?, balls ), `overs`=IFNULL(?, overs), `score`=IFNULL(?, score) , `wickets`=IFNULL(?,wickets) , `fours` =IFNULL(? ,fours) , `sixes` =IFNULL(? ,sixes), "
+				+ "`wides` =IFNULL(? ,wides), `noballs` =IFNULL(? ,noballs), `byes` =IFNULL(? ,byes), `legbyes` =IFNULL(? ,legbyes) "
+				+ "WHERE live_game_id =?";
+		Object[] mat = new Object[] { match.getBalls(), match.getOvers(), match.getScore(), match.getWickets(),
 				match.getFours(), match.getSixes(), match.getWides(), match.getNoballs(), match.getByes(),
-				match.getLegbyes(), match.getId() };
-		int rows = jdbcTemplate.update(sql, mat);
+				match.getLegbyes(), match.getLive_game_id() };
+		int rows = 0;
+		try {
+			rows = jdbcTemplate.update(sql, mat);
+		} catch (Exception ex) {
+			logger.error("Error in updateMatchData. GameLiveId #" + match.getLive_game_id());
+		}
 		logger.info("Update Match data rows #:" + rows);
 		return rows;
 

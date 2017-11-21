@@ -38,6 +38,7 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		}
 
 		try {
+			scoreForm.getMatch().setLive_game_id(scoreForm.getLive_game_id());
 			rows = syncMatchData(scoreForm.getMatch());
 		} catch (Exception ex) {
 			logger.warn("Error in syncMatchData. " + ex);
@@ -64,9 +65,11 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	protected int syncMatchData(Match match) {
 		logger.info("In syncMatchData with isActive: " + match.isActive());
 		int rows;
-		if (match.isActive()) {
+		if (!match.isActive()) {
+			match.setLive_game_id("RRCC-11142017");
 			rows = updateInsertMatchData(match);
 		} else {
+			match.setActive(true);
 			rows = insertUpdateMatchData(match);
 		}
 		return rows;
