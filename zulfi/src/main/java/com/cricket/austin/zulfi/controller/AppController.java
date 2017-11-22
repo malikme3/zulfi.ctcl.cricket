@@ -528,9 +528,11 @@ public class AppController {
 	}
 
 	@CrossOrigin(origins = "http://localhost:4200")
-	@RequestMapping(value = { "/liveScoring/getScoreFormData" }, method = RequestMethod.GET)
-	public ResponseEntity<ScoreForm> getScoreFormData(@RequestParam String liveGameId) throws Exception {
-		logger.info("In AppController.getScoreFormData" + liveGameId);
+	@RequestMapping(value = { "/liveScoring/refreshScore" }, method = RequestMethod.GET)
+	public ResponseEntity<ScoreForm> getScoreFormData(@RequestParam String liveGameId, int batsmanOne, int batsmanTwo)
+			throws Exception {
+		logger.info("In AppController.getScoreFormData" + liveGameId + " batsmanOne " + batsmanOne + " batsmanTwo "
+				+ batsmanTwo);
 		ScoreForm scoreForm = liveScoreService.getScoreFrom(liveGameId);
 		return new ResponseEntity<ScoreForm>(scoreForm, HttpStatus.OK);
 	}

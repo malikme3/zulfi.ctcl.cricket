@@ -1,9 +1,15 @@
 package com.cricket.austin.zulfi.live.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ScoreForm {
 	int id, current_ball_runs;
 	boolean is_batsman_out;
-	String live_game_id;
+	String live_game_id, extras_types;
+
 	Match match;
 	Batsman batsman_1;
 	Batsman batsman_2;
@@ -32,6 +38,14 @@ public class ScoreForm {
 
 	public void setIs_batsman_out(boolean is_batsman_out) {
 		this.is_batsman_out = is_batsman_out;
+	}
+
+	public String getExtras_types() {
+		return extras_types;
+	}
+
+	public void setExtras_types(String extras_types) {
+		this.extras_types = extras_types;
 	}
 
 	public String getLive_game_id() {
@@ -85,8 +99,9 @@ public class ScoreForm {
 	@Override
 	public String toString() {
 		return "ScoreForm [id=" + id + ", current_ball_runs=" + current_ball_runs + ", is_batsman_out=" + is_batsman_out
-				+ ", live_game_id=" + live_game_id + ", match=" + match + ", batsman_1=" + batsman_1 + ", batsman_2="
-				+ batsman_2 + ", bowler=" + bowler + ", wicket=" + wicket + "]";
+				+ ", live_game_id=" + live_game_id + ", extras_types=" + extras_types + ", match=" + match
+				+ ", batsman_1=" + batsman_1 + ", batsman_2=" + batsman_2 + ", bowler=" + bowler + ", wicket=" + wicket
+				+ "]";
 	}
 
 }

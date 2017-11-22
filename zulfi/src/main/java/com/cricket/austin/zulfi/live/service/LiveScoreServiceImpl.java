@@ -86,11 +86,16 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	@Override
 	public ScoreForm getScoreFrom(String liveGameId) {
 		ScoreForm scoreForm = new ScoreForm();
-		scoreForm.setMatch(LiveScoreDao.getMatchData(liveGameId));
-		scoreForm.setBatsman_1(LiveScoreDao.getBatsmanData(liveGameId, 2));
-		scoreForm.setBatsman_2(LiveScoreDao.getBatsmanData(liveGameId, 3));
-		scoreForm.setBowler(LiveScoreDao.getBowlerData(liveGameId, 2));
-		scoreForm.setWicket(LiveScoreDao.getWicketData(liveGameId, 2));
+		Match match = LiveScoreDao.getMatchData(liveGameId);
+		scoreForm.setMatch(match);
+		Batsman batsman_1 = LiveScoreDao.getBatsmanData(liveGameId, 2);
+		scoreForm.setBatsman_1(batsman_1);
+		Batsman batsman_2 = LiveScoreDao.getBatsmanData(liveGameId, 3);
+		scoreForm.setBatsman_2(batsman_2);
+		Bowler bowler = LiveScoreDao.getBowlerData(liveGameId, 2);
+		scoreForm.setBowler(bowler);
+		Wicket wicket = LiveScoreDao.getWicketData(liveGameId, 2);
+		scoreForm.setWicket(wicket);
 		return scoreForm;
 	}
 
