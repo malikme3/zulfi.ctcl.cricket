@@ -1,5 +1,9 @@
 package com.cricket.austin.zulfi.live.service;
 
+import java.time.LocalDate;
+import java.time.temporal.WeekFields;
+import java.util.Locale;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import com.cricket.austin.zulfi.live.dao.UpdateLiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
+import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
@@ -295,6 +300,32 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 	}
 
 	/**** Wicket Data Insert/Update End ****/
+
+	/**** Pre-match information submitted by Umpire ***/
+
+	@Override
+	public int insertUpdateUmpirePreMatch(PreMatchInfoByUmpire info) {
+		int rows = 0;
+
+		try {
+
+			logger.info("updateInsertBatsmanData :update data");
+			// rows = updateLiveScoreDaoImpl.updateUmpirePreMatch((info));
+
+		} catch (Exception ex) {
+			logger.info("update failed, Try insert data");
+			rows = insertLiveScoreDaoImpl.insertUmpirePreMatch(info);
+
+		}
+		return rows;
+	}
+
+	// get full current week #
+	private int getCurrentWeek() {
+		LocalDate date = LocalDate.now();
+		WeekFields weekFields = WeekFields.of(Locale.getDefault());
+		return date.get(weekFields.weekOfWeekBasedYear());
+	}
 
 	public boolean isEmptyZeroNull(String s) {
 		if (s == null || ".".equalsIgnoreCase(s) || s.length() < 0) {

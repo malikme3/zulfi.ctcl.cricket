@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
+import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
 @Repository
@@ -73,5 +74,16 @@ public class InsertLiveScoreDaoImpl implements InsertLiveScoreDao {
 		logger.info("rows are ::" + rows);
 		return rows;
 
+	}
+
+	@Override
+	public int insertUmpirePreMatch(PreMatchInfoByUmpire info) {
+		String sql = "INSERT INTO `world`.`umpire _pre_match_livescore` "
+				+ "(`live_game_id`, `league_id`, `ground_id`, `home_team_id`, `guest_team_id`, `first_umpire_team_id`, `second_umpire_team__id`, `maxovers`, `match_date`, "
+				+ "`match_week`, `comments`) " + "VALUES ('2x', '2', '2', '2', '2', '2', '2', '2', 'today', '2', '2');";
+		Object[] match = new Object[] {};
+		int rows = jdbcTemplate.update(sql, match);
+		logger.info("rows are ::" + rows);
+		return rows;
 	}
 }

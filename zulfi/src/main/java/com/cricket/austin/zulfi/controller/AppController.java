@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.service.LiveScoreService;
 import com.cricket.austin.zulfi.model.ClubsPage;
@@ -511,6 +512,13 @@ public class AppController {
 		return new ResponseEntity<List<News>>(news, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = { "/ctcl/grounds" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> ctclGrounds() throws Exception {
+		logger.info("In AppController.ctclGrounds() => ");
+		List<Map<String, Object>> clubs = clubsService.getCtclGrounds();
+		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
+	}
+
 	@RequestMapping(value = { "/matches/latest" }, method = RequestMethod.GET)
 	public ResponseEntity<List<Map<String, Object>>> latesMatchesSummary() throws Exception {
 		logger.info("In AppController.clubsList() => ");
@@ -537,5 +545,12 @@ public class AppController {
 		return new ResponseEntity<ScoreForm>(scoreForm, HttpStatus.OK);
 	}
 
+	/**** Pre-match information by umpire ***/
+	@RequestMapping(value = { "/preMatchInfo/byUmpire" }, method = RequestMethod.POST)
+	public ResponseEntity<Integer> submitPreMatchInfoByUmpire(@RequestBody PreMatchInfoByUmpire info) throws Exception {
+		logger.info("In AppController.submitPreMatchInfoByUmpire()" + info);
+		int match = liveScoreService.insertUpdateUmpirePreMatch(info);
+		return new ResponseEntity<Integer>(match, HttpStatus.OK);
+	}
 	/**** Start: End Scoring ***/
 }

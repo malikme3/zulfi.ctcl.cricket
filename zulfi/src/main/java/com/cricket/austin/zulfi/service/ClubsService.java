@@ -17,4 +17,6 @@ public interface ClubsService {
 	public List<News> getNews();
 
 	public List<Map<String, Object>> clubsInfo();
+
+	public List<Map<String, Object>> getCtclGrounds();
 }

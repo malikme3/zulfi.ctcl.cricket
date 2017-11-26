@@ -3,6 +3,7 @@ package com.cricket.austin.zulfi.live.dao;
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
+import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
 public interface InsertLiveScoreDao {
@@ -14,5 +15,7 @@ public interface InsertLiveScoreDao {
 	public int insertBowlerData(Bowler bowler);
 
 	public int insertWicketData(Wicket wicket);
+
+	public int insertUmpirePreMatch(PreMatchInfoByUmpire info);
 
 }

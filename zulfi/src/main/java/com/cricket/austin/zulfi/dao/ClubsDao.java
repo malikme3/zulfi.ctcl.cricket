@@ -19,4 +19,6 @@ public interface ClubsDao {
 
 	public List<Map<String, Object>> clubsInfo();
 
+	public List<Map<String, Object>> getCtclGrounds();
+
 }
