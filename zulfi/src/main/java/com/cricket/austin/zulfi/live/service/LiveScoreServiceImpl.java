@@ -1,6 +1,8 @@
 package com.cricket.austin.zulfi.live.service;
 
+import java.sql.Date;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -308,13 +310,15 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		int rows = 0;
 
 		try {
-
+			info.setMatch_date(getTodayDate());
+			info.setLive_game_id(setLiveGameId(info));
+			info.setMatch_week(getCurrentWeek());
 			logger.info("updateInsertBatsmanData :update data");
-			// rows = updateLiveScoreDaoImpl.updateUmpirePreMatch((info));
+			rows = insertLiveScoreDaoImpl.insertUmpirePreMatch(info);
 
 		} catch (Exception ex) {
 			logger.info("update failed, Try insert data");
-			rows = insertLiveScoreDaoImpl.insertUmpirePreMatch(info);
+			// rows = updateLiveScoreDaoImpl.updateUmpirePreMatch((info));
 
 		}
 		return rows;
@@ -325,6 +329,24 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		LocalDate date = LocalDate.now();
 		WeekFields weekFields = WeekFields.of(Locale.getDefault());
 		return date.get(weekFields.weekOfWeekBasedYear());
+	}
+
+	public Date getTodayDate() {
+		long millis = System.currentTimeMillis();
+		return new java.sql.Date(millis);
+	};
+
+	// set live game id
+	private String setLiveGameId(PreMatchInfoByUmpire info) {
+		// constructing game id as bat first & second team id, ground id and today's
+		// date.
+
+		LocalDate localDate = LocalDate.now();
+		String today = DateTimeFormatter.ofPattern("MM-dd-yyyy").format(localDate);
+
+		String liveGameId = info.getBatting_frst_team().getValue() + "-" + info.getBatting_second_team().getValue()
+				+ "-" + info.getGround() + "-" + today;
+		return liveGameId;
 	}
 
 	public boolean isEmptyZeroNull(String s) {

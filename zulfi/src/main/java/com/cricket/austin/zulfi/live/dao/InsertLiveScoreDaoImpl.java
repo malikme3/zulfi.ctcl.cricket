@@ -78,10 +78,13 @@ public class InsertLiveScoreDaoImpl implements InsertLiveScoreDao {
 
 	@Override
 	public int insertUmpirePreMatch(PreMatchInfoByUmpire info) {
-		String sql = "INSERT INTO `world`.`umpire _pre_match_livescore` "
+		String sql = "INSERT INTO `world`.`umpire_pre_match_livescore` "
 				+ "(`live_game_id`, `league_id`, `ground_id`, `home_team_id`, `guest_team_id`, `first_umpire_team_id`, `second_umpire_team__id`, `maxovers`, `match_date`, "
-				+ "`match_week`, `comments`) " + "VALUES ('2x', '2', '2', '2', '2', '2', '2', '2', 'today', '2', '2');";
-		Object[] match = new Object[] {};
+				+ "`match_week`, `comments`) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+		Object[] match = new Object[] { info.getLive_game_id(), info.getLeague(), info.getGround(),
+				info.getHome_team().getValue(), info.getGuest_team().getValue(), info.getUmpire_team_1().getValue(),
+				info.getUmpire_team_2().getValue(), info.getMaxovers(), info.getMatch_date(), info.getMatch_week(),
+				info.getComments() };
 		int rows = jdbcTemplate.update(sql, match);
 		logger.info("rows are ::" + rows);
 		return rows;

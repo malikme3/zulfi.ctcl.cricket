@@ -546,6 +546,7 @@ public class AppController {
 	}
 
 	/**** Pre-match information by umpire ***/
+	@CrossOrigin(origins = "http://localhost:4200")
 	@RequestMapping(value = { "/preMatchInfo/byUmpire" }, method = RequestMethod.POST)
 	public ResponseEntity<Integer> submitPreMatchInfoByUmpire(@RequestBody PreMatchInfoByUmpire info) throws Exception {
 		logger.info("In AppController.submitPreMatchInfoByUmpire()" + info);
