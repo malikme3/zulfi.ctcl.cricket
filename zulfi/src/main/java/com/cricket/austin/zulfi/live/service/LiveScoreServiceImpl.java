@@ -332,7 +332,10 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 		try {
 			xi.setMatch_date(getTodayDate());
 			logger.info("Inserting Playing XI");
-			rows = insertLiveScoreDaoImpl.insertPlayingXI(xi);
+			String type = "regular";
+			rows = insertLiveScoreDaoImpl.insertPlayingXI(xi.getTeam(), xi.getRegularPlayers(), type);
+			type = "portables";
+			rows = insertLiveScoreDaoImpl.insertPlayingXI(xi.getTeam(), xi.getPortablesPlayers(), type);
 
 		} catch (Exception ex) {
 			logger.info("Insert failed, Try update data");

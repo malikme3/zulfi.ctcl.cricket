@@ -31,7 +31,7 @@ public interface TeamService {
 
 	List<Map<String, Object>> findMatchByDate(int homeTeam, int awayTeam, Date matchDate);
 
-	List<Map<String, Object>> findPlayerByTeamId(int teamId);
+	List<Map<String, Object>> findPlayerByTeamId(String teamId);
 
 	List<Map<String, Object>> findPlayer() throws Exception;
 

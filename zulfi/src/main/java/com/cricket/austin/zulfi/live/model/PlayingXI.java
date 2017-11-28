@@ -1,11 +1,13 @@
 package com.cricket.austin.zulfi.live.model;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class PlayingXI {
 	Date match_date;
-	Team team, player;
-	String player_type;
+	Team team;
+	ArrayList<MatchPlayer> regularPlayers;
+	ArrayList<MatchPlayer> portablesPlayers;
 
 	public Date getMatch_date() {
 		return match_date;
@@ -23,26 +25,26 @@ public class PlayingXI {
 		this.team = team;
 	}
 
-	public Team getPlayer() {
-		return player;
+	public ArrayList<MatchPlayer> getRegularPlayers() {
+		return regularPlayers;
 	}
 
-	public void setPlayer(Team player) {
-		this.player = player;
+	public void setRegularPlayers(ArrayList<MatchPlayer> regularPlayers) {
+		this.regularPlayers = regularPlayers;
 	}
 
-	public String getPlayer_type() {
-		return player_type;
+	public ArrayList<MatchPlayer> getPortablesPlayers() {
+		return portablesPlayers;
 	}
 
-	public void setPlayer_type(String player_type) {
-		this.player_type = player_type;
+	public void setPortablesPlayers(ArrayList<MatchPlayer> portablesPlayers) {
+		this.portablesPlayers = portablesPlayers;
 	}
 
 	@Override
 	public String toString() {
-		return "PlayingXI [match_date=" + match_date + ", team=" + team + ", player=" + player + ", player_type="
-				+ player_type + "]";
+		return "PlayingXI [match_date=" + match_date + ", team=" + team + ", regularPlayers=" + regularPlayers
+				+ ", portablesPlayers=" + portablesPlayers + "]";
 	}
 
 }

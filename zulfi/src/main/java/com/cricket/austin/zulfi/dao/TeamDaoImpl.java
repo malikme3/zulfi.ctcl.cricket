@@ -275,8 +275,11 @@ public class TeamDaoImpl implements TeamDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> findPlayerByTeamId(int teamId) {
-		String sql = "SELECT  concat(PlayerFName, ' ', PlayerLName) as label, playerId as value, playerTeam as teamId "
+	public List<Map<String, Object>> findPlayerByTeamId(String teamId) {
+		if ("null".equalsIgnoreCase(teamId)) {
+			teamId = null;
+		}
+		String sql = "SELECT  concat(PlayerFName, ' ', PlayerLName) as itemName, playerId as id, playerTeam as teamId "
 				+ "FROM players where playerTeam = IFNULL(?, playerTeam ) and isactive = 0 ORDER BY PlayerFName,PlayerLName";
 
 		List<Map<String, Object>> playersList = jdbcTemplate.queryForList(sql, teamId);
@@ -296,7 +299,7 @@ public class TeamDaoImpl implements TeamDao {
 
 	@Override
 	public List<Map<String, Object>> findPlayerByIds(List<Integer> ids) {
-		String sql = "SELECT CONCAT(p.PlayerFName, ' ', p.PlayerLName) as label, p.PlayerId as value  "
+		String sql = "SELECT CONCAT(p.PlayerFName, ' ', p.PlayerLName) as label, p.PlayerId as value , playerTeam as teamId "
 				+ "FROM PLAYERS p INNER JOIN TEAMS t ON t.TeamID = p.PlayerTeam "
 				+ "WHERE p.playerTeam IN (:teamsIds)  and p.isactive = 0 ORDER BY PlayerFName,PlayerLName";
 

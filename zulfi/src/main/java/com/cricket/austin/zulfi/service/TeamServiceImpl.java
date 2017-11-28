@@ -99,7 +99,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public List<Map<String, Object>> findPlayerByTeamId(int teamId) {
+	public List<Map<String, Object>> findPlayerByTeamId(String teamId) {
 		return teamDao.findPlayerByTeamId(teamId);
 
 	}

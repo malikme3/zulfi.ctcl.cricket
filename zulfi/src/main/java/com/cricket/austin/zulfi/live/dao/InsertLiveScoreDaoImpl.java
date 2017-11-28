@@ -1,18 +1,25 @@
 package com.cricket.austin.zulfi.live.dao;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
-import com.cricket.austin.zulfi.live.model.PlayingXI;
+import com.cricket.austin.zulfi.live.model.MatchPlayer;
 import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
+import com.cricket.austin.zulfi.live.model.Team;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
 @Repository
@@ -97,14 +104,33 @@ public class InsertLiveScoreDaoImpl implements InsertLiveScoreDao {
 	}
 
 	@Override
-	public int insertPlayingXI(PlayingXI player) {
-		String sql = "INSERT INTO `world`.`playingXI_livescore` (`team_id`, `team_abbrev`, `player_id`, `player_abbrev`, `player_type`, `date`) "
-				+ " VALUES (?, ?, ?, ?, ?, ?)";
-		Object[] xi = new Object[] { player.getTeam().getValue(), player.getTeam().getLabel(),
-				player.getPlayer().getValue(), player.getPlayer().getLabel(), player.getPlayer_type(),
-				player.getMatch_date() };
-		int rows = jdbcTemplate.update(sql, xi);
+	public int insertPlayingXI(Team team, ArrayList<MatchPlayer> players, String type) {
+		String sql = "INSERT INTO `world`.`playingXI_livescore` (`match_teamId`, `Match_teamAbbrev`, `player_id`, `player_abbrev`, "
+				+ "`player_teamId`, `player_teamAbbrev`, `player_type` , `date`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		// Object[] xi = new Object[] {};
+		// int rows = jdbcTemplate.update(sql, xi);
+		int[] rows = jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+
+			@Override
+			public void setValues(PreparedStatement ps, int i) throws SQLException {
+
+				MatchPlayer player = ((List<MatchPlayer>) players).get(i);
+				ps.setInt(1, team.getValue());
+				ps.setString(2, team.getLabel());
+				ps.setInt(3, player.getId());
+				ps.setString(4, player.getItemName());
+				ps.setInt(5, player.getTeamId());
+				ps.setString(6, player.getItemName());
+				ps.setString(7, type);
+				ps.setDate(8, new java.sql.Date(System.currentTimeMillis()));
+			}
+
+			@Override
+			public int getBatchSize() {
+				return players.size();
+			}
+		});
 		logger.info("rows are ::" + rows);
-		return rows;
+		return 1;
 	}
 }

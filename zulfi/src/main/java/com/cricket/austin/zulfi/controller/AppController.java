@@ -528,7 +528,7 @@ public class AppController {
 	}
 
 	@RequestMapping(value = { "/player/byTeamId" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Map<String, Object>>> playerByTeamId(@RequestParam int id) throws Exception {
+	public ResponseEntity<List<Map<String, Object>>> playerByTeamId(@RequestParam String id) throws Exception {
 		logger.info("In AppController.playerByTeamId()" + id);
 		List<Map<String, Object>> match = teamServiceMatch.findPlayerByTeamId(id);
 		return new ResponseEntity<List<Map<String, Object>>>(match, HttpStatus.OK);
