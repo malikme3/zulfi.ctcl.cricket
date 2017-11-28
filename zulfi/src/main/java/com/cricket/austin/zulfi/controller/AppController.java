@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.cricket.austin.zulfi.live.model.PlayingXI;
 import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.service.LiveScoreService;
@@ -526,6 +527,13 @@ public class AppController {
 		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = { "/player/byTeamId" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> playerByTeamId(@RequestParam int id) throws Exception {
+		logger.info("In AppController.playerByTeamId()" + id);
+		List<Map<String, Object>> match = teamServiceMatch.findPlayerByTeamId(id);
+		return new ResponseEntity<List<Map<String, Object>>>(match, HttpStatus.OK);
+	}
+
 	/**** Start: Live Scoring ***/
 	@RequestMapping(value = { "/liveScoring/submitBallData" }, method = RequestMethod.POST)
 	public ResponseEntity<Integer> submitLiveScore(@RequestBody ScoreForm scoreForm) throws Exception {
@@ -551,6 +559,14 @@ public class AppController {
 	public ResponseEntity<Integer> submitPreMatchInfoByUmpire(@RequestBody PreMatchInfoByUmpire info) throws Exception {
 		logger.info("In AppController.submitPreMatchInfoByUmpire()" + info);
 		int match = liveScoreService.insertUpdateUmpirePreMatch(info);
+		return new ResponseEntity<Integer>(match, HttpStatus.OK);
+	}
+
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(value = { "/playingXI/byCaptain" }, method = RequestMethod.POST)
+	public ResponseEntity<Integer> submitPlayingXIByCaptains(@RequestBody PlayingXI xi) throws Exception {
+		logger.info("In AppController.submitPlayingXIByCaptains()" + xi);
+		int match = liveScoreService.insertUpdatePlayingXI(xi);
 		return new ResponseEntity<Integer>(match, HttpStatus.OK);
 	}
 	/**** Start: End Scoring ***/

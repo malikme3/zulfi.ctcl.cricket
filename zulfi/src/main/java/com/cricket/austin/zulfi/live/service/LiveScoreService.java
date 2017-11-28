@@ -3,6 +3,7 @@ package com.cricket.austin.zulfi.live.service;
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
+import com.cricket.austin.zulfi.live.model.PlayingXI;
 import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
@@ -31,4 +32,6 @@ public interface LiveScoreService {
 	public int insertUpdateWicketData(Wicket wicket);
 
 	public int insertUpdateUmpirePreMatch(PreMatchInfoByUmpire info);
+
+	public int insertUpdatePlayingXI(PlayingXI xi);
 }

@@ -19,6 +19,7 @@ import com.cricket.austin.zulfi.live.dao.UpdateLiveScoreDaoImpl;
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
+import com.cricket.austin.zulfi.live.model.PlayingXI;
 import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.ScoreForm;
 import com.cricket.austin.zulfi.live.model.Wicket;
@@ -313,11 +314,28 @@ public class LiveScoreServiceImpl implements LiveScoreService {
 			info.setMatch_date(getTodayDate());
 			info.setLive_game_id(setLiveGameId(info));
 			info.setMatch_week(getCurrentWeek());
-			logger.info("updateInsertBatsmanData :update data");
+			logger.info("Inserting PreMatch data by Umpire");
 			rows = insertLiveScoreDaoImpl.insertUmpirePreMatch(info);
 
 		} catch (Exception ex) {
-			logger.info("update failed, Try insert data");
+			logger.info("Insert failed, Try update data");
+			// rows = updateLiveScoreDaoImpl.updateUmpirePreMatch((info));
+
+		}
+		return rows;
+	}
+
+	@Override
+	public int insertUpdatePlayingXI(PlayingXI xi) {
+		int rows = 0;
+
+		try {
+			xi.setMatch_date(getTodayDate());
+			logger.info("Inserting Playing XI");
+			rows = insertLiveScoreDaoImpl.insertPlayingXI(xi);
+
+		} catch (Exception ex) {
+			logger.info("Insert failed, Try update data");
 			// rows = updateLiveScoreDaoImpl.updateUmpirePreMatch((info));
 
 		}

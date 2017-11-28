@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.cricket.austin.zulfi.live.model.Batsman;
 import com.cricket.austin.zulfi.live.model.Bowler;
 import com.cricket.austin.zulfi.live.model.Match;
+import com.cricket.austin.zulfi.live.model.PlayingXI;
 import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
 import com.cricket.austin.zulfi.live.model.Wicket;
 
@@ -79,13 +80,30 @@ public class InsertLiveScoreDaoImpl implements InsertLiveScoreDao {
 	@Override
 	public int insertUmpirePreMatch(PreMatchInfoByUmpire info) {
 		String sql = "INSERT INTO `world`.`umpire_pre_match_livescore` "
-				+ "(`live_game_id`, `league_id`, `ground_id`, `home_team_id`, `guest_team_id`, `first_umpire_team_id`, `second_umpire_team__id`, `maxovers`, `match_date`, "
-				+ "`match_week`, `comments`) " + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+				+ "(`live_game_id`, `league_id`, `ground_id`, `home_teamId`, `home_teamAbbrev`,`guest_teamId`, `guest_teamAbbrev`,`toss_won_teamId`,`toss_won_teamAbbrev`, "
+				+ " `batting_first_teamId`,`batting_first_teamAbbrev`, `batting_second_teamId`,`batting_second_teamAbbrev`,`first_umpire_playerId`, "
+				+ "`second_umpire_playerId`, `maxovers`, `match_date`, `match_week`, `comments`) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 		Object[] match = new Object[] { info.getLive_game_id(), info.getLeague(), info.getGround(),
-				info.getHome_team().getValue(), info.getGuest_team().getValue(), info.getUmpire_team_1().getValue(),
-				info.getUmpire_team_2().getValue(), info.getMaxovers(), info.getMatch_date(), info.getMatch_week(),
-				info.getComments() };
+				info.getHome_team().getValue(), info.getHome_team().getLabel(), info.getGuest_team().getValue(),
+				info.getGuest_team().getLabel(), info.getToss_won_team().getValue(), info.getToss_won_team().getLabel(),
+				info.getBatting_frst_team().getValue(), info.getBatting_frst_team().getLabel(),
+				info.getBatting_second_team().getValue(), info.getBatting_second_team().getLabel(),
+				info.getUmpire_team_1().getValue(), info.getUmpire_team_2().getValue(), info.getMaxovers(),
+				info.getMatch_date(), info.getMatch_week(), info.getComments() };
 		int rows = jdbcTemplate.update(sql, match);
+		logger.info("rows are ::" + rows);
+		return rows;
+	}
+
+	@Override
+	public int insertPlayingXI(PlayingXI player) {
+		String sql = "INSERT INTO `world`.`playingXI_livescore` (`team_id`, `team_abbrev`, `player_id`, `player_abbrev`, `player_type`, `date`) "
+				+ " VALUES (?, ?, ?, ?, ?, ?)";
+		Object[] xi = new Object[] { player.getTeam().getValue(), player.getTeam().getLabel(),
+				player.getPlayer().getValue(), player.getPlayer().getLabel(), player.getPlayer_type(),
+				player.getMatch_date() };
+		int rows = jdbcTemplate.update(sql, xi);
 		logger.info("rows are ::" + rows);
 		return rows;
 	}

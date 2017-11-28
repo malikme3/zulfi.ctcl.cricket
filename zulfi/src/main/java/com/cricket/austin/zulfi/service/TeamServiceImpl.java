@@ -69,8 +69,8 @@ public class TeamServiceImpl implements TeamService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { Exception.class })
 	public List<Map<String, Object>> getExtraScoreDetails(int gameId) throws Exception {
 		/*
-		 * try { update(); insert(); } catch (Exception ex) {
-		 * System.out.println(ex); throw ex; }
+		 * try { update(); insert(); } catch (Exception ex) { System.out.println(ex);
+		 * throw ex; }
 		 */
 		return teamDao.getExtraScoreDetails(gameId);
 	}
@@ -99,7 +99,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public List<Map<String, Object>> findPlayerByTeamId(String teamId) {
+	public List<Map<String, Object>> findPlayerByTeamId(int teamId) {
 		return teamDao.findPlayerByTeamId(teamId);
 
 	}

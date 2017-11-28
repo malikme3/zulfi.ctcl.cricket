@@ -275,8 +275,8 @@ public class TeamDaoImpl implements TeamDao {
 	}
 
 	@Override
-	public List<Map<String, Object>> findPlayerByTeamId(String teamId) {
-		String sql = "SELECT  concat(PlayerFName, ' ', PlayerLName) as label, playerId as value "
+	public List<Map<String, Object>> findPlayerByTeamId(int teamId) {
+		String sql = "SELECT  concat(PlayerFName, ' ', PlayerLName) as label, playerId as value, playerTeam as teamId "
 				+ "FROM players where playerTeam = IFNULL(?, playerTeam ) and isactive = 0 ORDER BY PlayerFName,PlayerLName";
 
 		List<Map<String, Object>> playersList = jdbcTemplate.queryForList(sql, teamId);

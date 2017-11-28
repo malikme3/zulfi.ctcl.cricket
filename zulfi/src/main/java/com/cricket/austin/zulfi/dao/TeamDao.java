@@ -36,7 +36,7 @@ public interface TeamDao {
 
 	void updatLname();
 
-	List<Map<String, Object>> findPlayerByTeamId(String teamId);
+	List<Map<String, Object>> findPlayerByTeamId(int teamId);
 
 	List<Map<String, Object>> findPlayer();
 
