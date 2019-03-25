@@ -45,4 +45,9 @@ public class ClubsServiceImpl implements ClubsService {
 		return clubsDao.clubsInfo();
 	}
 
+	@Override
+	public List<Map<String, Object>> getCtclGrounds() {
+		return clubsDao.getCtclGrounds();
+	}
+
 }

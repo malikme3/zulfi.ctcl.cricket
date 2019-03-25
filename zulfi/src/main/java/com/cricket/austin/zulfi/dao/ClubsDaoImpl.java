@@ -146,4 +146,11 @@ public class ClubsDaoImpl implements ClubsDao {
 
 	}
 
+	@Override
+	public List<Map<String, Object>> getCtclGrounds() {
+		String sql = "SELECT "
+				+ "GroundID as ground_id, GroundName as ground_name, GroundAbbrev as ground_abbrev FROM grounds WHERE GroundActive = 1";
+		return jdbcTemplate.queryForList(sql);
+	}
+
 }

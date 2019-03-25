@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.cricket.austin.zulfi.live.model.PlayingXI;
+import com.cricket.austin.zulfi.live.model.PreMatchInfoByUmpire;
+import com.cricket.austin.zulfi.live.model.ScoreForm;
+import com.cricket.austin.zulfi.live.service.LiveScoreService;
 import com.cricket.austin.zulfi.model.ClubsPage;
 import com.cricket.austin.zulfi.model.Ladder;
 import com.cricket.austin.zulfi.model.Leagues;
@@ -57,6 +61,9 @@ public class AppController {
 
 	@Autowired
 	BattingRecordsService battingRecordsService;
+
+	@Autowired
+	LiveScoreService liveScoreService;
 
 	static final Logger logger = LoggerFactory.getLogger(AppController.class);
 
@@ -506,10 +513,61 @@ public class AppController {
 		return new ResponseEntity<List<News>>(news, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = { "/ctcl/grounds" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> ctclGrounds() throws Exception {
+		logger.info("In AppController.ctclGrounds() => ");
+		List<Map<String, Object>> clubs = clubsService.getCtclGrounds();
+		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
+	}
+
 	@RequestMapping(value = { "/matches/latest" }, method = RequestMethod.GET)
 	public ResponseEntity<List<Map<String, Object>>> latesMatchesSummary() throws Exception {
 		logger.info("In AppController.clubsList() => ");
 		List<Map<String, Object>> clubs = matchScoringService.getLatesMatchesSummary();
 		return new ResponseEntity<List<Map<String, Object>>>(clubs, HttpStatus.OK);
 	}
+
+	@RequestMapping(value = { "/player/byTeamId" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Map<String, Object>>> playerByTeamId(@RequestParam String id) throws Exception {
+		logger.info("In AppController.playerByTeamId()" + id);
+		List<Map<String, Object>> match = teamServiceMatch.findPlayerByTeamId(id);
+		return new ResponseEntity<List<Map<String, Object>>>(match, HttpStatus.OK);
+	}
+
+	/**** Start: Live Scoring ***/
+	@RequestMapping(value = { "/liveScoring/submitBallData" }, method = RequestMethod.POST)
+	public ResponseEntity<Integer> submitLiveScore(@RequestBody ScoreForm scoreForm) throws Exception {
+
+		logger.info("In AppController.syncScoreForm()" + scoreForm);
+		int rows = liveScoreService.syncScoreForm(scoreForm);
+		return new ResponseEntity<Integer>(rows, HttpStatus.OK);
+	}
+
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(value = { "/liveScoring/refreshScore" }, method = RequestMethod.GET)
+	public ResponseEntity<ScoreForm> getScoreFormData(@RequestParam String liveGameId, int batsmanOne, int batsmanTwo)
+			throws Exception {
+		logger.info("In AppController.getScoreFormData" + liveGameId + " batsmanOne " + batsmanOne + " batsmanTwo "
+				+ batsmanTwo);
+		ScoreForm scoreForm = liveScoreService.getScoreFrom(liveGameId);
+		return new ResponseEntity<ScoreForm>(scoreForm, HttpStatus.OK);
+	}
+
+	/**** Pre-match information by umpire ***/
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(value = { "/preMatchInfo/byUmpire" }, method = RequestMethod.POST)
+	public ResponseEntity<Integer> submitPreMatchInfoByUmpire(@RequestBody PreMatchInfoByUmpire info) throws Exception {
+		logger.info("In AppController.submitPreMatchInfoByUmpire()" + info);
+		int match = liveScoreService.insertUpdateUmpirePreMatch(info);
+		return new ResponseEntity<Integer>(match, HttpStatus.OK);
+	}
+
+	@CrossOrigin(origins = "http://localhost:4200")
+	@RequestMapping(value = { "/playingXI/byCaptain" }, method = RequestMethod.POST)
+	public ResponseEntity<Integer> submitPlayingXIByCaptains(@RequestBody PlayingXI xi) throws Exception {
+		logger.info("In AppController.submitPlayingXIByCaptains()" + xi);
+		int match = liveScoreService.insertUpdatePlayingXI(xi);
+		return new ResponseEntity<Integer>(match, HttpStatus.OK);
+	}
+	/**** Start: End Scoring ***/
 }
